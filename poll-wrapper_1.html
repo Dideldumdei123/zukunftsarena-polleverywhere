@@ -1,76 +1,91 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Poll</title>
-<style>
-  html, body { margin: 0; padding: 0; background: transparent; font-family: sans-serif; }
-  #btnRow { text-align: center; }
-  #refreshBtn {
-    display: inline-block;
-    padding: 12px 24px;
-    background-color: #e20074;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-family: sans-serif;
-    font-weight: bold;
-    font-size: 15px;
-    line-height: 1;
-    cursor: pointer;
-    margin-bottom: 12px;
-  }
-  #refreshBtn:hover { background-color: #c00063; }
-  #pollContainer iframe {
-    width: 100%;
-    height: 740px;
-    border: 0;
-    display: block;
-  }
-</style>
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Poll</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        font-family: sans-serif;
+      }
+      #btnRow {
+        text-align: center;
+      }
+      #refreshBtn {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #e20074;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-family: sans-serif;
+        font-weight: bold;
+        font-size: 15px;
+        line-height: 1;
+        cursor: pointer;
+        margin-bottom: 12px;
+      }
+      #refreshBtn:hover {
+        background-color: #c00063;
+      }
+      #pollContainer iframe {
+        width: 100%;
+        height: 740px;
+        border: 0;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="btnRow">
+      <button id="refreshBtn">Umfrage aktualisieren</button>
+    </div>
+    <div id="pollContainer"></div>
 
-<div id="btnRow"><button id="refreshBtn">Poll aktualisieren</button></div>
-<div id="pollContainer"></div>
+    <script>
+      // ===== Konfiguration =====
+      var POLL_URL =
+        "https://pe.app/response_links/aba72e52-2295-48f6-885b-f06318fecfd5/start";
 
-<script>
-  // ===== Konfiguration =====
-  var POLL_URL = "https://pe.app/response_links/aba72e52-2295-48f6-885b-f06318fecfd5/start";
+      // Optional: automatischer Refresh zur Startzeit, z.B. "2026-07-20T14:00:00+02:00".
+      // null = deaktiviert (nur manueller Button).
+      var AUTO_REFRESH_AT = null;
+      // =========================
 
-  // Optional: automatischer Refresh zur Startzeit, z.B. "2026-07-20T14:00:00+02:00".
-  // null = deaktiviert (nur manueller Button).
-  var AUTO_REFRESH_AT = null;
-  // =========================
+      function loadPoll() {
+        var container = document.getElementById("pollContainer");
+        // Altes iFrame komplett zerstoeren
+        container.innerHTML = "";
+        // Neues iFrame frisch erzeugen -> sauberer Session-Aufbau
+        var iframe = document.createElement("iframe");
+        // Cache-Buster, damit garantiert nichts aus dem Cache kommt
+        iframe.src =
+          POLL_URL +
+          (POLL_URL.indexOf("?") === -1 ? "?" : "&") +
+          "t=" +
+          Date.now();
+        iframe.setAttribute("allow", "fullscreen");
+        container.appendChild(iframe);
+      }
 
-  function loadPoll() {
-    var container = document.getElementById("pollContainer");
-    // Altes iFrame komplett zerstoeren
-    container.innerHTML = "";
-    // Neues iFrame frisch erzeugen -> sauberer Session-Aufbau
-    var iframe = document.createElement("iframe");
-    // Cache-Buster, damit garantiert nichts aus dem Cache kommt
-    iframe.src = POLL_URL + (POLL_URL.indexOf("?") === -1 ? "?" : "&") + "t=" + Date.now();
-    iframe.setAttribute("allow", "fullscreen");
-    container.appendChild(iframe);
-  }
+      document.getElementById("refreshBtn").addEventListener("click", loadPoll);
 
-  document.getElementById("refreshBtn").addEventListener("click", loadPoll);
+      // Initial laden
+      loadPoll();
 
-  // Initial laden
-  loadPoll();
-
-  // Optionaler Auto-Refresh zur konfigurierten Zeit
-  if (AUTO_REFRESH_AT) {
-    var delay = new Date(AUTO_REFRESH_AT).getTime() - Date.now();
-    if (delay > 0) {
-      setTimeout(function () {
-        loadPoll();
-      }, delay + 1000); // 1s Puffer
-    }
-  }
-</script>
-
-</body>
+      // Optionaler Auto-Refresh zur konfigurierten Zeit
+      if (AUTO_REFRESH_AT) {
+        var delay = new Date(AUTO_REFRESH_AT).getTime() - Date.now();
+        if (delay > 0) {
+          setTimeout(function () {
+            loadPoll();
+          }, delay + 1000); // 1s Puffer
+        }
+      }
+    </script>
+  </body>
 </html>
