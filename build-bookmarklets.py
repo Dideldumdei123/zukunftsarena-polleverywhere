@@ -90,10 +90,12 @@ TEMPLATE = """<!doctype html>
   <body>
     <h1>Bedienelemente ausblenden</h1>
     <p>
-      Blendet in der Poll-Everywhere-Praesentationsansicht den Antwortzaehler
-      (<b>Anonymous 0</b>), den Sortier-Button, die Schalter
-      <b>Choices / Results / Lock / Correctness</b> sowie <b>Exit</b> und die
-      Seitennavigation aus. Die Ergebnisse aktualisieren sich normal weiter.
+      Blendet in der Poll-Everywhere-Praesentationsansicht aus: den
+      Antwortzaehler (<b>Anonymous 0</b>), den Sortier-Button, die Schalter
+      <b>Choices / Results / Lock / Correctness</b>, <b>Exit</b> samt
+      Seitennavigation und links oben den QR-Code mit
+      <b>Respond at pe.app/tsystems</b>. Das T-Systems-Logo bleibt stehen.
+      Die Ergebnisse aktualisieren sich normal weiter.
     </p>
 
     <h2>1. Lesezeichen anlegen</h2>
@@ -101,11 +103,12 @@ TEMPLATE = """<!doctype html>
       Buttons in die Leiste ziehen:</p>
     <p>
       <a class="bm" href="__PLAIN__">Poll aufraeumen</a>
-      <a class="bm sec" href="__HEADER__">Poll aufraeumen + Kopfzeile</a>
+      <a class="bm sec" href="__HEADER__">Poll aufraeumen + ganze Kopfzeile</a>
     </p>
     <p>
-      Die zweite Variante entfernt zusaetzlich die Kopfzeile mit QR-Code und
-      <b>Respond at pe.app/tsystems</b>.
+      Die zweite Variante entfernt zusaetzlich die komplette weisse Leiste
+      oben &ndash; <b>dann ist auch das T-Systems-Logo weg</b>. Fuer den
+      normalen Fall die erste nehmen.
     </p>
 
     <h2>2. Benutzen</h2>

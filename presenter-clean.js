@@ -31,13 +31,25 @@
   // einnehmen darf, um noch ausgeblendet zu werden. Verhindert, dass beim
   // Hochlaufen im DOM versehentlich die halbe Folie erwischt wird.
   var TARGETS = [
-    // siblings: der Sortier-Button neben der Pille traegt keinen Text und
-    // wird darum ueber die Nachbarschaft mitgenommen.
-    { terms: ["Anonymous"], maxW: 0.45, maxH: 0.14, siblings: true },
+    // siblings/companions: der Sortier-Button neben der Pille traegt keinen
+    // Text. Je nach DOM-Aufbau ist er Nachbar der Pille oder haengt ganz
+    // woanders - darum zusaetzlich alles in derselben Bildschirmzeile.
+    {
+      terms: ["Anonymous"],
+      maxW: 0.45,
+      maxH: 0.14,
+      siblings: true,
+      companions: true,
+    },
     { terms: ["Choices", "Results"], maxW: 0.99, maxH: 0.18 },
-    { terms: ["Exit"], maxW: 0.45, maxH: 0.14 },
+    { terms: ["Exit"], maxW: 0.45, maxH: 0.14, companions: true },
+    // Nur die linke Gruppe der Kopfzeile (QR-Code + "Respond at"): maxW 0.5
+    // sorgt dafuer, dass der Aufstieg vor der vollen Leiste stoppt und das
+    // T-Systems-Logo rechts stehen bleibt.
+    { terms: ["Respond at"], maxW: 0.5, maxH: 0.22, siblings: true },
   ];
   if (HIDE_HEADER) {
+    // Zusaetzlich die komplette weisse Leiste, inklusive Logo.
     TARGETS.push({ terms: ["Respond at"], maxW: 1, maxH: 0.22 });
   }
 
@@ -108,6 +120,33 @@
     });
   }
 
+  // Kleine, textlose Icon-Buttons auf derselben Bildschirmzeile wie der
+  // Treffer. Greift auch dann, wenn sie im DOM ganz woanders haengen.
+  // visibility:hidden erhaelt das Layout, die Zeile bleibt also messbar.
+  function hideBandCompanions(el) {
+    var r = el.getBoundingClientRect();
+    if (!r.height) return;
+    var top = r.top - r.height;
+    var bottom = r.bottom + r.height;
+    var all = document.body.getElementsByTagName("*");
+    for (var i = 0; i < all.length; i++) {
+      var c = all[i];
+      if (c.hasAttribute(ATTR)) continue;
+      if (c.contains(el) || el.contains(c)) continue;
+      // Textlose Icons, plus die Seitenanzeige im Format "1/1".
+      var txt = (c.textContent || "").trim();
+      if (txt.length > 2 && !/^\d+\s*\/\s*\d+$/.test(txt)) continue;
+      if (c.parentElement && c.parentElement.hasAttribute(ATTR)) continue;
+      var cr = c.getBoundingClientRect();
+      if (!cr.width || !cr.height) continue;
+      // Breite Elemente sind Balken oder Logos, keine Bedienknoepfe.
+      if (cr.width > 0.08 * vw() || cr.height > 0.14 * vh()) continue;
+      var mid = cr.top + cr.height / 2;
+      if (mid < top || mid > bottom) continue;
+      c.setAttribute(ATTR, "");
+    }
+  }
+
   function apply() {
     for (var i = 0; i < TARGETS.length; i++) {
       var t = TARGETS[i];
@@ -117,6 +156,7 @@
         if (!el) continue;
         if (!el.hasAttribute(ATTR)) el.setAttribute(ATTR, "");
         if (t.siblings) hideIconSiblings(el);
+        if (t.companions) hideBandCompanions(el);
       }
     }
   }
