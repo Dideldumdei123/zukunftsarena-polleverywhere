@@ -8,178 +8,454 @@
     <style>
       :root {
         --magenta: #e20074;
-        --rose: #fceff6;
       }
       html,
       body {
         margin: 0;
         height: 100%;
-        background: var(--rose);
-        color: #1c1c1c;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         overflow: hidden;
+        background: #fceff6;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
-      #wrap {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        padding: 4vh 4vw;
-        box-sizing: border-box;
+
+      /* Buehne = sichtbarer Ausschnitt. Was das iFrame darueber hinaus
+         zeichnet (Hinweiszeile oben, "Powered by"-Fuss), faellt weg. */
+      #stage {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: var(--bg, #fceff6);
       }
-      h1 {
-        margin: 0 0 3vh;
-        font-size: 4.2vh;
+      #stage iframe {
+        position: absolute;
+        border: 0;
+        display: block;
+      }
+      .mask {
+        position: absolute;
+        background: var(--bg, #fceff6);
+        border-radius: 12px;
+      }
+
+      /* --------- Einrichten (nur in der Bearbeitungsansicht) --------- */
+      body.edit .mask {
+        outline: 2px dashed var(--magenta);
+        cursor: move;
+      }
+      body.edit .mask::after {
+        content: "";
+        position: absolute;
+        right: -6px;
+        bottom: -6px;
+        width: 14px;
+        height: 14px;
+        background: var(--magenta);
+        border: 2px solid #fff;
+        border-radius: 3px;
+        cursor: nwse-resize;
+      }
+
+      #panel {
+        display: none;
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        z-index: 10;
+        width: 268px;
+        max-height: calc(100% - 16px);
+        overflow: auto;
+        padding: 12px 14px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.97);
+        box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22);
+        font-size: 12px;
+        color: #222;
+      }
+      body.edit #panel {
+        display: block;
+      }
+      #panel h2 {
+        margin: 0 0 8px;
+        font-size: 13px;
         color: var(--magenta);
       }
-      .grid {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 1.6vh 2vw;
-        align-items: baseline;
-        font-size: 2.6vh;
+      #panel input[type="text"] {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 6px;
+        margin-bottom: 8px;
+        border: 1px solid #d1d5db;
+        border-radius: 5px;
+        font-size: 11px;
       }
-      .k {
-        color: #6b7280;
-        white-space: nowrap;
-      }
-      .v {
-        font-weight: 700;
-        font-variant-numeric: tabular-nums;
-      }
-      .ok {
-        color: #047857;
-      }
-      .bad {
-        color: #b91c1c;
-      }
-      #pulse {
-        margin-top: auto;
+      #panel label {
         display: flex;
         align-items: center;
-        gap: 1.4vw;
-        font-size: 2.4vh;
+        gap: 6px;
+        margin: 4px 0;
       }
-      #dot {
-        width: 2.2vh;
-        height: 2.2vh;
-        border-radius: 50%;
+      #panel label span {
+        width: 46px;
+        flex: none;
+      }
+      #panel input[type="range"] {
+        flex: 1;
+        min-width: 0;
+      }
+      #panel output {
+        width: 38px;
+        flex: none;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      .row {
+        display: flex;
+        gap: 6px;
+        margin-top: 10px;
+      }
+      .row button {
+        flex: 1;
+        padding: 7px 4px;
+        border: 0;
+        border-radius: 5px;
         background: var(--magenta);
-        animation: beat 1s infinite ease-in-out;
+        color: #fff;
+        font-weight: 700;
+        font-size: 11px;
+        cursor: pointer;
       }
-      @keyframes beat {
-        0%,
-        100% {
-          transform: scale(1);
-          opacity: 1;
-        }
-        50% {
-          transform: scale(0.55);
-          opacity: 0.35;
-        }
+      .row button.sec {
+        background: #6b7280;
+      }
+      #status {
+        margin-top: 8px;
+        font-size: 11px;
+        color: #555;
+        line-height: 1.4;
+      }
+      #hint {
+        position: absolute;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 6%;
+        text-align: center;
+        font-size: 15px;
+        color: #9b1259;
+      }
+      body.noUrl #hint {
+        display: flex;
       }
     </style>
   </head>
   <body>
-    <div id="wrap">
-      <h1>Add-in-Test: laeuft die Folie wirklich live?</h1>
+    <div id="stage"></div>
+    <div id="hint">
+      Noch keine Umfrage hinterlegt.<br />In Poll Everywhere:
+      <b>Send &rsaquo; Share and embed &rsaquo; Live presentation view</b>
+      kopieren und links einsetzen.
+    </div>
 
-      <div class="grid">
-        <div class="k">Sekunden seit Laden</div>
-        <div class="v" id="uptime">0</div>
-
-        <div class="k">Uhrzeit</div>
-        <div class="v" id="clock">–</div>
-
-        <div class="k">Office.js</div>
-        <div class="v" id="office">wird geladen …</div>
-
-        <div class="k">Host / Plattform</div>
-        <div class="v" id="host">–</div>
-
-        <div class="k">Ansicht</div>
-        <div class="v" id="view">–</div>
-
-        <div class="k">Netzwerkabruf</div>
-        <div class="v" id="net">–</div>
+    <div id="panel">
+      <h2>Umfrage einrichten</h2>
+      <input
+        id="url"
+        type="text"
+        placeholder="https://embed.polleverywhere.com/…"
+      />
+      <label
+        ><span>Oben</span><input id="cTop" type="range" min="0" max="40" step="0.5" /><output id="oTop"></output
+      ></label>
+      <label
+        ><span>Unten</span><input id="cBottom" type="range" min="0" max="40" step="0.5" /><output id="oBottom"></output
+      ></label>
+      <label
+        ><span>Links</span><input id="cLeft" type="range" min="0" max="40" step="0.5" /><output id="oLeft"></output
+      ></label>
+      <label
+        ><span>Rechts</span><input id="cRight" type="range" min="0" max="40" step="0.5" /><output id="oRight"></output
+      ></label>
+      <label><span>Farbe</span><input id="bg" type="color" /></label>
+      <div class="row">
+        <button id="addMask">+ Abdeckung</button>
+        <button id="delMask" class="sec">Loeschen</button>
       </div>
-
-      <div id="pulse"><div id="dot"></div><div>Wenn dieser Punkt in der Praesentation pulsiert und die Sekunden weiterzaehlen, ist die Folie live.</div></div>
+      <div class="row">
+        <button id="save">Speichern</button>
+        <button id="reload" class="sec">Neu laden</button>
+      </div>
+      <div id="status">Wird geladen …</div>
     </div>
 
     <script>
-      var started = Date.now();
+      var SETTING = "zaCfg";
 
-      function tick() {
-        var s = Math.floor((Date.now() - started) / 1000);
-        document.getElementById("uptime").textContent = s;
-        document.getElementById("clock").textContent =
-          new Date().toLocaleTimeString("de-DE");
+      var DEFAULTS = {
+        url: "",
+        crop: { top: 0, right: 0, bottom: 0, left: 0 },
+        bg: "#fceff6",
+        masks: [],
+      };
+
+      var cfg = JSON.parse(JSON.stringify(DEFAULTS));
+      var officeReady = false;
+      var stage = document.getElementById("stage");
+      var statusEl = document.getElementById("status");
+
+      function setStatus(t) {
+        statusEl.textContent = t;
       }
-      tick();
-      setInterval(tick, 1000);
 
-      // Office.js: muss initialisiert werden, sonst laden manche
-      // Office-Versionen das Add-in gar nicht erst.
-      var officeSeen = false;
-      if (typeof Office !== "undefined") {
-        Office.onReady(function (info) {
-          officeSeen = true;
-          var el = document.getElementById("office");
-          el.textContent = "bereit";
-          el.className = "v ok";
-          document.getElementById("host").textContent =
-            (info.host || "?") + " / " + (info.platform || "?");
-          pollView();
+      // ---------- Konfiguration laden ----------
+      // Reihenfolge: Office-Dokumenteinstellung (reist in der .pptx mit,
+      // pro eingefuegtem Add-in getrennt) -> #cfg= im Link -> Standard.
+      function readHash() {
+        var m = location.hash.match(/cfg=([^&]+)/);
+        if (!m) return null;
+        try {
+          return JSON.parse(decodeURIComponent(escape(atob(m[1]))));
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function loadConfig() {
+        var loaded = null;
+        if (officeReady && Office.context.document.settings) {
+          var raw = Office.context.document.settings.get(SETTING);
+          if (raw) {
+            try {
+              loaded = JSON.parse(raw);
+            } catch (e) {
+              loaded = null;
+            }
+          }
+        }
+        if (!loaded) loaded = readHash();
+        if (loaded) {
+          Object.keys(loaded).forEach(function (k) {
+            cfg[k] = loaded[k];
+          });
+        }
+      }
+
+      function saveConfig() {
+        if (!officeReady || !Office.context.document.settings) {
+          // Ausserhalb von PowerPoint: Konfiguration in den Link schreiben.
+          location.hash =
+            "cfg=" + btoa(unescape(encodeURIComponent(JSON.stringify(cfg))));
+          setStatus("Im Link gespeichert (ausserhalb von PowerPoint).");
+          return;
+        }
+        Office.context.document.settings.set(SETTING, JSON.stringify(cfg));
+        Office.context.document.settings.saveAsync(function (res) {
+          if (res.status === Office.AsyncResultStatus.Succeeded) {
+            setStatus("Gespeichert. Jetzt die Praesentation sichern (Cmd+S).");
+          } else {
+            setStatus("Speichern fehlgeschlagen: " + res.error.message);
+          }
         });
       }
-      setTimeout(function () {
-        if (!officeSeen) {
-          var el = document.getElementById("office");
-          el.textContent = "nicht erreichbar (Netzwerk?)";
-          el.className = "v bad";
-        }
-      }, 8000);
 
-      // Ansicht abfragen statt Event abonnieren: addHandlerAsync wuerde
-      // ReadWriteDocument-Rechte verlangen, getActiveViewAsync nicht.
+      // ---------- Darstellung ----------
+      function buildFrame() {
+        stage.innerHTML = "";
+        document.body.classList.toggle("noUrl", !cfg.url);
+        if (cfg.url) {
+          var iframe = document.createElement("iframe");
+          iframe.setAttribute("scrolling", "no");
+          iframe.src =
+            cfg.url +
+            (cfg.url.indexOf("?") === -1 ? "?" : "&") +
+            "t=" +
+            Date.now();
+          stage.appendChild(iframe);
+        }
+        applyCrop();
+        renderMasks();
+      }
+
+      function applyCrop() {
+        document.documentElement.style.setProperty("--bg", cfg.bg);
+        var f = stage.querySelector("iframe");
+        if (!f) return;
+        var c = cfg.crop;
+        f.style.left = -c.left + "%";
+        f.style.top = -c.top + "%";
+        f.style.width = 100 + c.left + c.right + "%";
+        f.style.height = 100 + c.top + c.bottom + "%";
+      }
+
+      function renderMasks() {
+        Array.prototype.forEach.call(
+          document.querySelectorAll(".mask"),
+          function (el) {
+            el.remove();
+          }
+        );
+        cfg.masks.forEach(function (m, i) {
+          var el = document.createElement("div");
+          el.className = "mask";
+          el.dataset.i = i;
+          el.style.left = m.x + "%";
+          el.style.top = m.y + "%";
+          el.style.width = m.w + "%";
+          el.style.height = m.h + "%";
+          stage.appendChild(el);
+        });
+      }
+
+      // ---------- Bedienfeld ----------
+      function syncPanel() {
+        document.getElementById("url").value = cfg.url;
+        ["top", "bottom", "left", "right"].forEach(function (s) {
+          var cap = s[0].toUpperCase() + s.slice(1);
+          document.getElementById("c" + cap).value = cfg.crop[s];
+          document.getElementById("o" + cap).textContent = cfg.crop[s] + "%";
+        });
+        document.getElementById("bg").value = cfg.bg;
+      }
+
+      ["top", "bottom", "left", "right"].forEach(function (s) {
+        var cap = s[0].toUpperCase() + s.slice(1);
+        document
+          .getElementById("c" + cap)
+          .addEventListener("input", function () {
+            cfg.crop[s] = parseFloat(this.value);
+            document.getElementById("o" + cap).textContent = this.value + "%";
+            applyCrop();
+          });
+      });
+
+      document.getElementById("bg").addEventListener("input", function () {
+        cfg.bg = this.value;
+        applyCrop();
+      });
+
+      document.getElementById("url").addEventListener("change", function () {
+        cfg.url = this.value.trim();
+        buildFrame();
+      });
+
+      var selected = -1;
+      document.getElementById("addMask").addEventListener("click", function () {
+        cfg.masks.push({ x: 40, y: 40, w: 20, h: 10 });
+        selected = cfg.masks.length - 1;
+        renderMasks();
+      });
+      document.getElementById("delMask").addEventListener("click", function () {
+        if (selected < 0) return setStatus("Keine Abdeckung ausgewaehlt.");
+        cfg.masks.splice(selected, 1);
+        selected = -1;
+        renderMasks();
+      });
+      document.getElementById("save").addEventListener("click", saveConfig);
+      document.getElementById("reload").addEventListener("click", buildFrame);
+
+      // Abdeckungen ziehen / skalieren
+      var drag = null;
+      stage.addEventListener("mousedown", function (e) {
+        if (!document.body.classList.contains("edit")) return;
+        var el = e.target.closest && e.target.closest(".mask");
+        if (!el) {
+          selected = -1;
+          return;
+        }
+        selected = parseInt(el.dataset.i, 10);
+        var r = el.getBoundingClientRect();
+        drag = {
+          el: el,
+          i: selected,
+          resizing: e.clientX > r.right - 16 && e.clientY > r.bottom - 16,
+          x: e.clientX,
+          y: e.clientY,
+          orig: Object.assign({}, cfg.masks[selected]),
+        };
+        e.preventDefault();
+      });
+      window.addEventListener("mousemove", function (e) {
+        if (!drag) return;
+        var dx = ((e.clientX - drag.x) / stage.clientWidth) * 100;
+        var dy = ((e.clientY - drag.y) / stage.clientHeight) * 100;
+        var m = cfg.masks[drag.i];
+        if (drag.resizing) {
+          m.w = Math.max(1, drag.orig.w + dx);
+          m.h = Math.max(1, drag.orig.h + dy);
+          drag.el.style.width = m.w + "%";
+          drag.el.style.height = m.h + "%";
+        } else {
+          m.x = drag.orig.x + dx;
+          m.y = drag.orig.y + dy;
+          drag.el.style.left = m.x + "%";
+          drag.el.style.top = m.y + "%";
+        }
+      });
+      window.addEventListener("mouseup", function () {
+        drag = null;
+      });
+
+      // ---------- Ansicht: bearbeiten vs. praesentieren ----------
+      // In der Praesentation verschwindet das Bedienfeld komplett, damit
+      // wirklich nur das Ergebnis auf der Folie steht.
+      var viewSeen = false;
+
+      function applyView(view) {
+        viewSeen = true;
+        document.body.classList.toggle("edit", view !== "read");
+      }
+
       function pollView() {
-        if (!Office.context || !Office.context.document) return;
+        if (!officeReady || !Office.context.document.getActiveViewAsync) return;
         Office.context.document.getActiveViewAsync(function (res) {
-          var el = document.getElementById("view");
           if (res.status === Office.AsyncResultStatus.Succeeded) {
-            el.textContent =
-              res.value === "read"
-                ? "Praesentation (read)"
-                : "Bearbeiten (edit)";
-            el.className = "v " + (res.value === "read" ? "ok" : "v");
-          } else {
-            el.textContent = "unbekannt";
+            applyView(res.value);
           }
           setTimeout(pollView, 1000);
         });
+        // Notbremse: antwortet die Abfrage gar nicht, waere das Bedienfeld
+        // nie erreichbar und das Add-in nicht einrichtbar. Lieber das
+        // Bedienfeld zeigen als es unerreichbar zu machen - in der
+        // Praesentation hat die Abfrage laengst geantwortet.
+        setTimeout(function () {
+          if (!viewSeen) {
+            document.body.classList.add("edit");
+            setStatus("Ansicht nicht ermittelbar - Bedienfeld bleibt sichtbar.");
+          }
+        }, 3000);
       }
 
-      // Beweist, dass die Folie waehrend der Praesentation noch Daten holen
-      // darf - Voraussetzung fuer echte Live-Ergebnisse.
-      function probe() {
-        var el = document.getElementById("net");
-        fetch("./probe.json?t=" + Date.now(), { cache: "no-store" })
-          .then(function (r) {
-            return r.json();
-          })
-          .then(function (d) {
-            el.textContent =
-              "OK, zuletzt " + new Date().toLocaleTimeString("de-DE") +
-              " (" + d.name + ")";
-            el.className = "v ok";
-          })
-          .catch(function (e) {
-            el.textContent = "fehlgeschlagen: " + e.message;
-            el.className = "v bad";
-          });
+      function start() {
+        loadConfig();
+        syncPanel();
+        buildFrame();
       }
-      probe();
-      setInterval(probe, 5000);
+
+      if (typeof Office !== "undefined" && Office.onReady) {
+        Office.onReady(function (info) {
+          officeReady = !!(Office.context && Office.context.document);
+          start();
+          if (officeReady) {
+            setStatus(
+              "Bereit (" + (info.platform || "?") + "). Nach dem Speichern die Datei sichern."
+            );
+            pollView();
+          } else {
+            document.body.classList.add("edit");
+            setStatus("Ohne PowerPoint-Kontext - Konfiguration geht in den Link.");
+          }
+        });
+      }
+
+      // Im normalen Browser gibt es kein Office.onReady-Signal: nach kurzer
+      // Wartezeit trotzdem starten, damit die Seite dort einrichtbar ist.
+      setTimeout(function () {
+        if (!officeReady && !stage.hasChildNodes()) {
+          document.body.classList.add("edit");
+          start();
+          setStatus("Browser-Modus: einrichten, speichern, Link kopieren.");
+        }
+      }, 2500);
     </script>
   </body>
 </html>
