@@ -1,60 +1,65 @@
 # Zukunftsarena – Poll Everywhere
 
-Two GitHub Pages wrappers around the same Poll Everywhere activities.
-
-| File | Purpose | Where it runs |
-| --- | --- | --- |
-| `poll-wrapper_1.html` | **Voting.** Wraps the `pe.app` response link so participants can answer inside the Riddly webapp. Has a "Umfrage aktualisieren" button that rebuilds the iframe with a cache buster. | Riddly webapp |
-| `results-wrapper.html` | **Presenting.** Wraps the Poll Everywhere *embed* view and strips the presenter chrome (response count, "Anonymous" badge, Edit / Choices / Results / Lock / Correctness bar) that the PowerPoint plugin always draws. | PowerPoint slide / browser |
-
-## Why a second wrapper instead of configuring PowerPoint
-
-The Poll Everywhere PowerPoint plugin renders the activity as an Office add-in, which
-paints *on top of* the slide. Shapes, rectangles, and cropping in PowerPoint can never
-cover it, and the plugin exposes no option to hide the badge or the control bar.
-
-The embed view (`embed.polleverywhere.com` / `pollev-embeds.com`) is a different render
-of the same live activity. Those hosts send `Content-Security-Policy: frame-ancestors *`,
-so they can be framed from `*.github.io` — which means we control the surrounding page and
-can crop or mask anything that is left.
-
-## Setup for `results-wrapper.html`
-
-1. **Get the embed URL.** In Poll Everywhere open the activity → `Send` / `Share` tab →
-   **Share & embed** → **Embed**. Take only the URL out of the snippet. It looks like:
-
-   ```
-   https://embed.polleverywhere.com/multiple_choice_polls/<ID>?controls=none&short_poll=true
-   ```
-
-   `controls=none` already removes the Poll Everywhere control elements.
-
-2. **Point the wrapper at it** — either edit `DEFAULTS.url` in `results-wrapper.html`, or
-   append `?url=<embed-url>` to the page URL. One file works for every activity.
-
-3. **Calibrate.** Open the page and press <kbd>K</kbd>:
-   - the four sliders crop the top / bottom / left / right edge (in % of the stage),
-     which is how the header and footer bars get cut off;
-   - **+ Abdeckung** adds a rectangle in the background colour to cover anything that
-     is *not* on an edge (the "Anonymous 0" pill). Drag to move, drag the bottom-right
-     corner to resize;
-   - the colour picker sets both page background and mask colour — match it to the poll
-     background so the masks are invisible.
-
-4. **Copy link.** "Link kopieren" writes the whole calibration into the URL hash
-   (`#cfg=<base64>`). That link is self-contained — nothing else needs to be deployed.
-
-5. **Put it on the slide.** In the Poll Everywhere desktop app: `Poll Everywhere` →
-   `Insert` → `Web page`, paste the calibrated link. Keep the slide's speaker notes
-   intact — the app stores the URL there. (Microsoft's own "Web Viewer" add-in is being
-   retired, so prefer the Poll Everywhere route.)
-
-   Fallback with zero add-ins: open the link fullscreen in a browser and switch to it
-   for the poll moment.
-
-### Keyboard
-
-| Key | Action |
+| File | Purpose |
 | --- | --- |
-| <kbd>K</kbd> | toggle calibration panel |
-| <kbd>R</kbd> | rebuild the iframe (fresh session, cache-busted) |
+| `poll-wrapper_1.html` | **Voting.** Wraps the `pe.app` response link so participants can answer inside the Riddly webapp. |
+| `presenter-clean.js` | **Presenting.** Hides the Poll Everywhere chrome (response count, `Anonymous` pill, Choices / Results / Lock / Correctness, Exit, page nav) from the presentation view. Runs as a bookmarklet. |
+| `bookmarklets.html` | Drag-to-install page for the two bookmarklet variants. Generated — do not edit by hand. |
+| `build-bookmarklets.py` | Regenerates `bookmarklets.html` from `presenter-clean.js`. |
+| `results-wrapper.html` | Standby. Crops/masks an embedded results view. Needs a results embed URL that Poll Everywhere 2.0 does not currently seem to expose for this activity — see below. |
+
+## The problem
+
+The Poll Everywhere PowerPoint plugin renders the activity as an Office add-in
+painted *on top of* the slide, so shapes and cropping in PowerPoint cannot cover
+anything it draws. Contrary to Poll Everywhere's docs, the control bar does **not**
+auto-hide in Present mode in the current version — verified in both PowerPoint
+Present mode and the web presentation view. The `Anonymous <n>` pill also sits
+mid-canvas rather than at an edge, so cropping the object at the slide boundary
+can't remove it either.
+
+## The fix: `presenter-clean.js`
+
+Present the activity from a **browser** (Poll Everywhere → activity → Present) and
+run the bookmarklet. It hides the chrome in the page itself, which works because
+this is our own browser on our own screen — no add-in sandbox in the way.
+
+Why a self-contained bookmarklet rather than a hosted script: `pe.app` sends
+`script-src 'self' https://cdn-01.pe.app … 'unsafe-inline'`, so an injected
+`<script src="…github.io…">` would be blocked by CSP while inline code is allowed.
+The whole payload therefore lives in the bookmarklet URL (~7 KB).
+
+How it finds things: by **visible text**, not CSS classes — Poll Everywhere can
+rename classes at any time, but the labels stay. From each text hit it walks up the
+DOM to the largest ancestor that still fits size limits (max 45 % width / 14 %
+height for the pill, 25 % of viewport area overall), which lands on the pill or the
+button bar without ever swallowing the question or the answers. A `MutationObserver`
+re-applies after every re-render, since Poll Everywhere rebuilds the DOM (Turbo) on
+each incoming response. Clicking the bookmarklet a second time restores everything.
+
+Regenerate after editing the script:
+
+```bash
+python3 build-bookmarklets.py
+```
+
+## Standby: `results-wrapper.html`
+
+Would have been the tidier route — wrap the *embed* view on GitHub Pages, crop the
+edges, mask the rest. `embed.polleverywhere.com` and `pollev-embeds.com` both send
+`frame-ancestors *`, so they are framable from `*.github.io` (unlike `pe.app`).
+
+It is parked because the activity's **Share & embed** panel only yields the response
+link (the voting UI), and no results embed URL could be found:
+
+```
+pe.app/response_links/<uuid>/results                    404
+pe.app/response_links/<uuid>/questions/<qid>/results    404
+embed.polleverywhere.com/questions/<qid>                404
+pollev-embeds.com/questions/<qid>                       soft-404
+pollev-embeds.com/multiple_choice_polls/<qid>           soft-404
+```
+
+If a results embed URL ever does turn up, put it in `DEFAULTS.url` or append
+`?url=<embed-url>`, press <kbd>K</kbd> to crop and mask, then **Link kopieren** —
+the calibration is stored in the URL hash.
