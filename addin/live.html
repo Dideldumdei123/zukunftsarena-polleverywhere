@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zukunftsarena Live</title>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <style>
+      :root {
+        --magenta: #e20074;
+        --rose: #fceff6;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: var(--rose);
+        color: #1c1c1c;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        overflow: hidden;
+      }
+      #wrap {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: 4vh 4vw;
+        box-sizing: border-box;
+      }
+      h1 {
+        margin: 0 0 3vh;
+        font-size: 4.2vh;
+        color: var(--magenta);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 1.6vh 2vw;
+        align-items: baseline;
+        font-size: 2.6vh;
+      }
+      .k {
+        color: #6b7280;
+        white-space: nowrap;
+      }
+      .v {
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+      }
+      .ok {
+        color: #047857;
+      }
+      .bad {
+        color: #b91c1c;
+      }
+      #pulse {
+        margin-top: auto;
+        display: flex;
+        align-items: center;
+        gap: 1.4vw;
+        font-size: 2.4vh;
+      }
+      #dot {
+        width: 2.2vh;
+        height: 2.2vh;
+        border-radius: 50%;
+        background: var(--magenta);
+        animation: beat 1s infinite ease-in-out;
+      }
+      @keyframes beat {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(0.55);
+          opacity: 0.35;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrap">
+      <h1>Add-in-Test: laeuft die Folie wirklich live?</h1>
+
+      <div class="grid">
+        <div class="k">Sekunden seit Laden</div>
+        <div class="v" id="uptime">0</div>
+
+        <div class="k">Uhrzeit</div>
+        <div class="v" id="clock">–</div>
+
+        <div class="k">Office.js</div>
+        <div class="v" id="office">wird geladen …</div>
+
+        <div class="k">Host / Plattform</div>
+        <div class="v" id="host">–</div>
+
+        <div class="k">Ansicht</div>
+        <div class="v" id="view">–</div>
+
+        <div class="k">Netzwerkabruf</div>
+        <div class="v" id="net">–</div>
+      </div>
+
+      <div id="pulse"><div id="dot"></div><div>Wenn dieser Punkt in der Praesentation pulsiert und die Sekunden weiterzaehlen, ist die Folie live.</div></div>
+    </div>
+
+    <script>
+      var started = Date.now();
+
+      function tick() {
+        var s = Math.floor((Date.now() - started) / 1000);
+        document.getElementById("uptime").textContent = s;
+        document.getElementById("clock").textContent =
+          new Date().toLocaleTimeString("de-DE");
+      }
+      tick();
+      setInterval(tick, 1000);
+
+      // Office.js: muss initialisiert werden, sonst laden manche
+      // Office-Versionen das Add-in gar nicht erst.
+      var officeSeen = false;
+      if (typeof Office !== "undefined") {
+        Office.onReady(function (info) {
+          officeSeen = true;
+          var el = document.getElementById("office");
+          el.textContent = "bereit";
+          el.className = "v ok";
+          document.getElementById("host").textContent =
+            (info.host || "?") + " / " + (info.platform || "?");
+          pollView();
+        });
+      }
+      setTimeout(function () {
+        if (!officeSeen) {
+          var el = document.getElementById("office");
+          el.textContent = "nicht erreichbar (Netzwerk?)";
+          el.className = "v bad";
+        }
+      }, 8000);
+
+      // Ansicht abfragen statt Event abonnieren: addHandlerAsync wuerde
+      // ReadWriteDocument-Rechte verlangen, getActiveViewAsync nicht.
+      function pollView() {
+        if (!Office.context || !Office.context.document) return;
+        Office.context.document.getActiveViewAsync(function (res) {
+          var el = document.getElementById("view");
+          if (res.status === Office.AsyncResultStatus.Succeeded) {
+            el.textContent =
+              res.value === "read"
+                ? "Praesentation (read)"
+                : "Bearbeiten (edit)";
+            el.className = "v " + (res.value === "read" ? "ok" : "v");
+          } else {
+            el.textContent = "unbekannt";
+          }
+          setTimeout(pollView, 1000);
+        });
+      }
+
+      // Beweist, dass die Folie waehrend der Praesentation noch Daten holen
+      // darf - Voraussetzung fuer echte Live-Ergebnisse.
+      function probe() {
+        var el = document.getElementById("net");
+        fetch("./probe.json?t=" + Date.now(), { cache: "no-store" })
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (d) {
+            el.textContent =
+              "OK, zuletzt " + new Date().toLocaleTimeString("de-DE") +
+              " (" + d.name + ")";
+            el.className = "v ok";
+          })
+          .catch(function (e) {
+            el.textContent = "fehlgeschlagen: " + e.message;
+            el.className = "v bad";
+          });
+      }
+      probe();
+      setInterval(probe, 5000);
+    </script>
+  </body>
+</html>
