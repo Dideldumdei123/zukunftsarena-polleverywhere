@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Poll Ergebnisse</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #fceff6;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      /* Die Buehne = der sichtbare Ausschnitt. Alles was das iFrame
+         darueber hinaus zeichnet (Kopfzeile, Fussleiste), wird abgeschnitten. */
+      #stage {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: var(--bg, #fceff6);
+      }
+
+      #stage iframe {
+        position: absolute;
+        border: 0;
+        display: block;
+      }
+
+      /* Abdeckungen fuer alles, was nicht am Rand liegt (z.B. "Anonymous 0"). */
+      .mask {
+        position: absolute;
+        background: var(--maskColor, #fceff6);
+        border-radius: 12px;
+      }
+
+      /* ---------- Kalibrierungs-Modus (Taste K) ---------- */
+      body.calib .mask {
+        outline: 2px dashed #e20074;
+        cursor: move;
+      }
+      body.calib .mask::after {
+        content: "";
+        position: absolute;
+        right: -6px;
+        bottom: -6px;
+        width: 14px;
+        height: 14px;
+        background: #e20074;
+        border: 2px solid #fff;
+        border-radius: 3px;
+        cursor: nwse-resize;
+      }
+      #panel {
+        display: none;
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 10;
+        width: 290px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+        font-size: 13px;
+        color: #222;
+      }
+      body.calib #panel {
+        display: block;
+      }
+      #panel h2 {
+        margin: 0 0 10px;
+        font-size: 14px;
+        color: #e20074;
+      }
+      #panel label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 6px 0;
+      }
+      #panel label span {
+        width: 62px;
+        flex: none;
+      }
+      #panel input[type="range"] {
+        flex: 1;
+        min-width: 0;
+      }
+      #panel output {
+        width: 46px;
+        flex: none;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      #panel .row {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      #panel button {
+        flex: 1;
+        padding: 8px 6px;
+        border: 0;
+        border-radius: 6px;
+        background: #e20074;
+        color: #fff;
+        font-weight: 700;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      #panel button.sec {
+        background: #6b7280;
+      }
+      #panel .hint {
+        margin-top: 10px;
+        font-size: 11px;
+        line-height: 1.45;
+        color: #555;
+      }
+      #toast {
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
+        padding: 8px 16px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        font-size: 13px;
+        opacity: 0;
+        transition: opacity 0.25s;
+        pointer-events: none;
+      }
+      #toast.show {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage"></div>
+
+    <div id="panel">
+      <h2>Kalibrierung (K = ein/aus)</h2>
+      <label
+        ><span>Oben</span><input id="cTop" type="range" min="0" max="40" step="0.5" /><output id="oTop"></output
+      ></label>
+      <label
+        ><span>Unten</span><input id="cBottom" type="range" min="0" max="40" step="0.5" /><output id="oBottom"></output
+      ></label>
+      <label
+        ><span>Links</span><input id="cLeft" type="range" min="0" max="40" step="0.5" /><output id="oLeft"></output
+      ></label>
+      <label
+        ><span>Rechts</span><input id="cRight" type="range" min="0" max="40" step="0.5" /><output id="oRight"></output
+      ></label>
+      <label
+        ><span>Farbe</span><input id="cColor" type="color" /><output id="oColor"></output
+      ></label>
+      <div class="row">
+        <button id="addMask">+ Abdeckung</button>
+        <button id="delMask" class="sec">Loeschen</button>
+      </div>
+      <div class="row">
+        <button id="copyLink">Link kopieren</button>
+        <button id="reset" class="sec">Reset</button>
+      </div>
+      <div class="hint">
+        Abdeckung verschieben: ziehen. Groesse: Ecke unten rechts ziehen.
+        Ausgewaehlte Abdeckung mit "Loeschen" entfernen.<br />
+        Danach <b>Link kopieren</b> und genau diesen Link in PowerPoint
+        einsetzen &ndash; die Einstellungen stecken im Link.
+      </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+      // ============ KONFIGURATION ============
+      // Embed-URL der Aktivitaet aus Poll Everywhere:
+      //   Aktivitaet oeffnen -> Tab "Send"/"Share" -> "Share & embed" -> Embed.
+      // Aus dem Embed-Code nur die URL uebernehmen. Sie sieht so aus:
+      //   https://embed.polleverywhere.com/multiple_choice_polls/<ID>?controls=none&short_poll=true
+      // Wichtig: controls=none blendet die Poll-Everywhere-Bedienelemente aus.
+      var DEFAULTS = {
+        url: "https://embed.polleverywhere.com/multiple_choice_polls/DEINE_POLL_ID?controls=none&short_poll=true",
+
+        // Beschnitt in Prozent der Buehne. Schneidet Kopf-/Fussleiste weg.
+        crop: { top: 0, right: 0, bottom: 0, left: 0 },
+
+        // Hintergrund- und Abdeckungsfarbe (Poll-Everywhere-Rosa).
+        bg: "#fceff6",
+
+        // Abdeckungen in Prozent der Buehne: {x, y, w, h}
+        // Beispiel fuer das "Anonymous 0"-Abzeichen oben rechts:
+        //   { x: 78, y: 16, w: 20, h: 8 }
+        masks: [],
+
+        // Automatischer Reload in Sekunden (0 = aus). Nur als Notnagel,
+        // die Ergebnisse aktualisieren sich normalerweise live.
+        reload: 0,
+      };
+      // =======================================
+
+      var cfg = load();
+      var stage = document.getElementById("stage");
+      var iframe;
+
+      function load() {
+        var c = JSON.parse(JSON.stringify(DEFAULTS));
+        // Konfiguration aus dem Link (#cfg=...) hat Vorrang.
+        var m = location.hash.match(/cfg=([^&]+)/);
+        if (m) {
+          try {
+            var fromHash = JSON.parse(decodeURIComponent(escape(atob(m[1]))));
+            Object.keys(fromHash).forEach(function (k) {
+              c[k] = fromHash[k];
+            });
+          } catch (e) {
+            console.warn("Konfiguration im Link nicht lesbar:", e);
+          }
+        }
+        // Die Embed-URL laesst sich auch als ?url=... anhaengen. Alles nach
+        // "url=" wird roh uebernommen, damit das "&" in der Embed-URL
+        // (z.B. &short_poll=true) nicht abgeschnitten wird.
+        var i = location.search.indexOf("url=");
+        if (i !== -1) {
+          var raw = location.search.slice(i + 4);
+          c.url = raw.indexOf("%3A") !== -1 ? decodeURIComponent(raw) : raw;
+        }
+        return c;
+      }
+
+      function buildFrame() {
+        stage.innerHTML = "";
+        iframe = document.createElement("iframe");
+        iframe.setAttribute("allow", "fullscreen");
+        iframe.setAttribute("scrolling", "no");
+        var src =
+          cfg.url + (cfg.url.indexOf("?") === -1 ? "?" : "&") + "t=" + Date.now();
+        iframe.src = src;
+        stage.appendChild(iframe);
+        applyCrop();
+        renderMasks();
+      }
+
+      function applyCrop() {
+        var c = cfg.crop;
+        if (!iframe) return;
+        // iFrame groesser machen als die Buehne und verschieben ->
+        // der Rand (Kopfzeile, Fussleiste) faellt aus dem sichtbaren Bereich.
+        iframe.style.left = -c.left + "%";
+        iframe.style.top = -c.top + "%";
+        iframe.style.width = 100 + c.left + c.right + "%";
+        iframe.style.height = 100 + c.top + c.bottom + "%";
+        document.documentElement.style.setProperty("--bg", cfg.bg);
+        document.documentElement.style.setProperty("--maskColor", cfg.bg);
+        document.body.style.background = cfg.bg;
+      }
+
+      function renderMasks() {
+        Array.prototype.slice
+          .call(document.querySelectorAll(".mask"))
+          .forEach(function (el) {
+            el.remove();
+          });
+        cfg.masks.forEach(function (m, i) {
+          var el = document.createElement("div");
+          el.className = "mask";
+          el.dataset.i = i;
+          el.style.left = m.x + "%";
+          el.style.top = m.y + "%";
+          el.style.width = m.w + "%";
+          el.style.height = m.h + "%";
+          stage.appendChild(el);
+        });
+      }
+
+      buildFrame();
+      if (cfg.reload > 0) setInterval(buildFrame, cfg.reload * 1000);
+
+      // ---------- Kalibrierung ----------
+      var selected = -1;
+
+      function toast(msg) {
+        var t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        setTimeout(function () {
+          t.classList.remove("show");
+        }, 1800);
+      }
+
+      var sliders = ["top", "bottom", "left", "right"];
+      sliders.forEach(function (side) {
+        var input = document.getElementById(
+          "c" + side[0].toUpperCase() + side.slice(1)
+        );
+        var out = document.getElementById(
+          "o" + side[0].toUpperCase() + side.slice(1)
+        );
+        input.value = cfg.crop[side];
+        out.textContent = cfg.crop[side] + "%";
+        input.addEventListener("input", function () {
+          cfg.crop[side] = parseFloat(input.value);
+          out.textContent = input.value + "%";
+          applyCrop();
+        });
+      });
+
+      var colorInput = document.getElementById("cColor");
+      colorInput.value = cfg.bg;
+      document.getElementById("oColor").textContent = cfg.bg;
+      colorInput.addEventListener("input", function () {
+        cfg.bg = colorInput.value;
+        document.getElementById("oColor").textContent = cfg.bg;
+        applyCrop();
+      });
+
+      document.getElementById("addMask").addEventListener("click", function () {
+        cfg.masks.push({ x: 40, y: 40, w: 20, h: 10 });
+        selected = cfg.masks.length - 1;
+        renderMasks();
+      });
+
+      document.getElementById("delMask").addEventListener("click", function () {
+        if (selected < 0) return toast("Keine Abdeckung ausgewaehlt");
+        cfg.masks.splice(selected, 1);
+        selected = -1;
+        renderMasks();
+      });
+
+      document.getElementById("reset").addEventListener("click", function () {
+        cfg = JSON.parse(JSON.stringify(DEFAULTS));
+        location.hash = "";
+        location.reload();
+      });
+
+      document.getElementById("copyLink").addEventListener("click", function () {
+        var payload = btoa(
+          unescape(encodeURIComponent(JSON.stringify(cfg)))
+        );
+        var link =
+          location.origin + location.pathname + "#cfg=" + payload;
+        history.replaceState(null, "", "#cfg=" + payload);
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(link).then(
+            function () {
+              toast("Link kopiert");
+            },
+            function () {
+              prompt("Link:", link);
+            }
+          );
+        } else {
+          prompt("Link:", link);
+        }
+      });
+
+      // Abdeckungen ziehen und in der Groesse aendern
+      var drag = null;
+      stage.addEventListener("mousedown", function (e) {
+        if (!document.body.classList.contains("calib")) return;
+        var el = e.target.closest(".mask");
+        if (!el) {
+          selected = -1;
+          return;
+        }
+        selected = parseInt(el.dataset.i, 10);
+        var r = el.getBoundingClientRect();
+        var resizing = e.clientX > r.right - 16 && e.clientY > r.bottom - 16;
+        drag = {
+          el: el,
+          i: selected,
+          resizing: resizing,
+          startX: e.clientX,
+          startY: e.clientY,
+          orig: Object.assign({}, cfg.masks[selected]),
+        };
+        e.preventDefault();
+      });
+
+      window.addEventListener("mousemove", function (e) {
+        if (!drag) return;
+        var sw = stage.clientWidth,
+          sh = stage.clientHeight;
+        var dx = ((e.clientX - drag.startX) / sw) * 100;
+        var dy = ((e.clientY - drag.startY) / sh) * 100;
+        var m = cfg.masks[drag.i];
+        if (drag.resizing) {
+          m.w = Math.max(1, drag.orig.w + dx);
+          m.h = Math.max(1, drag.orig.h + dy);
+          drag.el.style.width = m.w + "%";
+          drag.el.style.height = m.h + "%";
+        } else {
+          m.x = drag.orig.x + dx;
+          m.y = drag.orig.y + dy;
+          drag.el.style.left = m.x + "%";
+          drag.el.style.top = m.y + "%";
+        }
+      });
+
+      window.addEventListener("mouseup", function () {
+        drag = null;
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.target.tagName === "INPUT") return;
+        if (e.key === "k" || e.key === "K") {
+          document.body.classList.toggle("calib");
+        }
+        if (e.key === "r" || e.key === "R") {
+          buildFrame();
+          toast("Neu geladen");
+        }
+      });
+    </script>
+  </body>
+</html>
