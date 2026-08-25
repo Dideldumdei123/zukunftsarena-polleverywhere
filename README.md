@@ -8,6 +8,7 @@ Live poll results on a PowerPoint slide, without Poll Everywhere's presenter chr
 | `addin/` | **Presenting on a slide.** A PowerPoint content add-in that renders our own page inside the slide. This is the main route. |
 | `presenter-clean.js`, `bookmarklets.html`, `build-bookmarklets.py` | **Presenting in a browser.** Bookmarklet that strips the chrome from Poll Everywhere's own presentation view. Fallback / still useful for rehearsals. |
 | `results-wrapper.html` | Standalone version of the crop-and-mask tool. Superseded by `addin/live.html`, kept for calibrating outside PowerPoint. |
+| `agenda/index.html` | **Breakout-Sessions agenda.** Mobile-first page listing both breakout rounds (title, speakers, description) for embedding in the Riddly Event App. Pulled from zukunftsarena.ch/de; rooms are not yet published there, so each session shows a "wird noch bekannt gegeben" placeholder. |
 
 ## Why an add-in
 

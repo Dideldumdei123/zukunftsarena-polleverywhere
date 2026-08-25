@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Breakout-Sessions – Zukunftsarena 2026</title>
+<meta name="description" content="Breakout-Sessions der T-Systems Zukunftsarena 2026 – Titel, Speaker, Zeiten und Räume.">
+<style>
+  :root {
+    --magenta: #E20074;
+    --magenta-dark: #b3005c;
+    --bg: #f5f5f7;
+    --surface: #ffffff;
+    --surface-alt: #f0eef2;
+    --text: #1a1a1e;
+    --text-muted: #5c5c66;
+    --border: #e2e0e6;
+    --badge-bg: #fdecf4;
+    --badge-text: #b3005c;
+    --booked-bg: #f2f2f4;
+    --booked-text: #8a8a94;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(20,20,25,0.04), 0 4px 14px rgba(20,20,25,0.06);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #101014;
+      --surface: #1a1a20;
+      --surface-alt: #202028;
+      --text: #f2f2f5;
+      --text-muted: #a6a6b0;
+      --border: #2c2c34;
+      --badge-bg: #3a1428;
+      --badge-text: #ff5ba8;
+      --booked-bg: #202028;
+      --booked-text: #7c7c88;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 4px 14px rgba(0,0,0,0.35);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    padding-bottom: 40px;
+  }
+
+  header.top {
+    padding: 20px 16px 14px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  header.top .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--magenta);
+    margin: 0 0 4px;
+  }
+
+  header.top h1 {
+    margin: 0 0 6px;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  header.top .meta {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  nav.rounds {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  nav.rounds button {
+    flex: 1 1 auto;
+    white-space: nowrap;
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  nav.rounds button .t {
+    display: block;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  nav.rounds button .s {
+    display: block;
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+
+  nav.rounds button.active {
+    background: var(--magenta);
+    border-color: var(--magenta);
+    color: #fff;
+  }
+
+  nav.rounds button.active .s {
+    color: rgba(255,255,255,0.85);
+  }
+
+  main {
+    padding: 14px 16px 0;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .round-panel { display: none; }
+  .round-panel.active { display: block; }
+
+  .round-note {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin: 4px 0 14px;
+    line-height: 1.5;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .card.booked {
+    opacity: 0.85;
+  }
+
+  .card-head {
+    padding: 14px 16px 12px;
+  }
+
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--badge-bg);
+    color: var(--badge-text);
+    letter-spacing: 0.01em;
+  }
+
+  .badge.room {
+    background: var(--surface-alt);
+    color: var(--text-muted);
+    border: 1px dashed var(--border);
+  }
+
+  .badge.booked {
+    background: var(--booked-bg);
+    color: var(--booked-text);
+  }
+
+  .badge.tour {
+    background: #eaf3ff;
+    color: #1f5fae;
+  }
+  @media (prefers-color-scheme: dark) {
+    .badge.tour { background: #17293e; color: #7fb2ec; }
+  }
+
+  h2.title {
+    margin: 0 0 6px;
+    font-size: 16.5px;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.005em;
+  }
+
+  .speakers {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+  }
+
+  .speakers .icon {
+    opacity: 0.7;
+  }
+
+  details.desc {
+    border-top: 1px solid var(--border);
+  }
+
+  details.desc summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--magenta-dark);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    details.desc summary { color: #ff87c1; }
+  }
+
+  details.desc summary::-webkit-details-marker { display: none; }
+
+  details.desc summary .chev {
+    transition: transform 0.18s ease;
+    font-size: 11px;
+  }
+
+  details.desc[open] summary .chev {
+    transform: rotate(180deg);
+  }
+
+  details.desc .body {
+    padding: 0 16px 16px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+
+  details.desc .body p {
+    margin: 0 0 10px;
+  }
+
+  details.desc .body p:last-child {
+    margin-bottom: 0;
+  }
+
+  details.desc .footnote {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  footer.page {
+    max-width: 640px;
+    margin: 24px auto 0;
+    padding: 0 16px;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  footer.page a {
+    color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <p class="eyebrow">T-Systems Zukunftsarena 2026</p>
+  <h1>Breakout-Sessions</h1>
+  <p class="meta">Montag, 14. September 2026 · The Circle Convention Center, Zürich Flughafen</p>
+</header>
+
+<nav class="rounds">
+  <button class="active" data-round="1">
+    <span class="t">Runde 1</span>
+    <span class="s">14:00 – 14:45</span>
+  </button>
+  <button data-round="2">
+    <span class="t">Runde 2</span>
+    <span class="s">15:15 – 16:00</span>
+  </button>
+</nav>
+
+<main>
+
+  <section class="round-panel active" id="round-1">
+    <p class="round-note">8 Breakout-Sessions zur Wahl, jeweils parallel. Räume werden vom Veranstalter noch bekannt gegeben.</p>
+    <div id="round-1-list"></div>
+  </section>
+
+  <section class="round-panel" id="round-2">
+    <p class="round-note">9 Breakout-Sessions zur Wahl, jeweils parallel. Räume werden vom Veranstalter noch bekannt gegeben.</p>
+    <div id="round-2-list"></div>
+  </section>
+
+</main>
+
+<footer class="page">
+  Quelle: <a href="https://zukunftsarena.ch/de" target="_blank" rel="noopener">zukunftsarena.ch/de</a> · Stand: 25.08.2026 · Änderungen vorbehalten
+</footer>
+
+<script>
+  const ROOM_TBA = "Raum: wird noch bekannt gegeben";
+
+  const round1 = [
+    {
+      title: "Souveräne KI anders gedacht",
+      speakers: ["Peter Schulze"],
+      desc: "Souveräne KI ist mehr als die Frage des Datenstandorts. Sie umfasst die Auswahl und Kontrolle von Modellen, Infrastruktur und Sicherheitsmechanismen sowie die Hoheit über die eigene Wertschöpfung. In dieser Breakout-Session zeigen wir, wie eine moderne KI-Plattform gestaltet sein kann, die digitale Souveränität konsequent umsetzt, ohne dabei Innovationsgeschwindigkeit oder Praxisnähe einzubüssen. Wir geben einen Überblick über unsere AI Platform und die AI Industrial Cloud, beleuchten Security-Aspekte im KI-Kontext und demonstrieren anhand konkreter Live-Features, was heute bereits realisierbar ist."
+    },
+    {
+      title: "Agentic AI: die nächste Evolutionsstufe der Künstlichen Intelligenz",
+      speakers: ["Martin Beyer", "Roland Wiesmüller"],
+      desc: "Agentic AI beschreibt eine neue Klasse von KI-Systemen, die eigenständig Ziele verfolgen, Entscheidungen treffen und komplexe Aufgaben über mehrere Schritte hinweg ausführen können. Damit geht die Entwicklung über klassische, reaktive Anwendungen hinaus, hin zu autonomen und proaktiven digitalen Akteuren. In dieser Breakout-Session zeigen wir anhand von Praxisbeispielen, was Agentic AI ausmacht, welche Einsatzmöglichkeiten sich branchenübergreifend ergeben und welche Auswirkungen diese Entwicklung auf Organisationen, Arbeitsweisen und Entscheidungsprozesse hat."
+    },
+    {
+      title: "Beyond Binary: Die transformative Kraft des Quantencomputings",
+      speakers: ["Teo Körner"],
+      desc: "Von den theoretischen Ursprüngen des Quantencomputings bis zu den technologischen Durchbrüchen der Gegenwart beleuchtet diese Session die Entwicklung einer der spannendsten Zukunftstechnologien. Wir erklären die grundlegenden Funktionsprinzipien und Unterschiede zum klassischen Computing verständlich und praxisnah. Abschliessend zeigen wir konkrete Anwendungsfelder und diskutieren, wo Quantencomputing reale industrielle und gesellschaftliche Transformation ermöglicht."
+    },
+    {
+      title: "TSHC – Die Reise geht weiter",
+      speakers: ["Jürgen Graalfs"],
+      desc: "Die ersten Spitäler haben sich für TSHC als IS-H-Nachfolge entschieden und die Einführungsprojekte laufen. Wir teilen dazu Erfahrungen aus den Projekten und schlagen damit die Brücke in das weite Land neuer Möglichkeiten auf Basis von S/4, BTP, Joule und all den Technologien, welche SAP in ihrer Plattform bereitstellt. Lassen Sie uns eintauchen in die Zukunft und einen Hauch der Neuerungen einatmen, welche die neue SAP-Welt uns eröffnet."
+    },
+    {
+      title: "Weniger Aufwand, mehr Kontrolle: KI-gestützte Netzwerke im Unternehmensalltag",
+      speakers: ["Friedrich Thirase"],
+      desc: "Unternehmensnetze werden immer komplexer. Gleichzeitig steigen die Anforderungen an Performance, Verfügbarkeit und Sicherheit. Künstliche Intelligenz bietet hier neue Wege: Sie erkennt Anomalien in Echtzeit, optimiert Datenflüsse automatisch und reduziert den administrativen Aufwand erheblich. In dieser eher technisch angelegten Breakout-Session erfahren Sie, wie KI-basierte SD-WANs und SD-LANs Netzwerke effizienter, sicherer und zukunftsfähiger machen – praxisnah und an konkreten Beispielen erklärt."
+    },
+    {
+      title: "AI Ready Data hat nichts mit Technologie zu tun – sie sind das Ergebnis einer starken Datenstrategie",
+      speakers: ["Stefan Löwe"],
+      desc: "In dieser Session zeigen wir, wie Daten von der Erfassung und Aufbereitung zu einer vertrauenswürdigen Grundlage für einen KI-Anwendungsfall werden – und warum ein gutes Datenmanagement der entscheidende Erfolgsfaktor für erfolgreiche KI-Projekte ist. Die eigentliche Herausforderung ist nicht KI. Die Herausforderung ist es, die richtigen Daten zur richtigen Zeit für die richtigen Entscheidungen bereitzustellen."
+    },
+    {
+      title: "Flughafen Tour: Weg des Gepäcks",
+      subtitle: "Hinter den Kulissen (max. 15 Personen)",
+      tour: true,
+      booked: true,
+      desc: "Erleben Sie auf dieser spannenden 90-minütigen Führung einen exklusiven Blick hinter die Kulissen des Flughafens Zürich. Verfolgen Sie den Weg eines Koffers von der Gepäckaufgabe bis zum Flugzeug und entdecken Sie die hochmoderne Gepäcksortieranlage mit ihren kilometerlangen Förderbändern, automatischen Scannern und Sortiersystemen. Begleitet von erfahrenen Guides erhalten Sie faszinierende Einblicke in die Prozesse des Gepäcktransports, die Verladung der Container sowie die Arbeit von Lost & Found. Eine einzigartige Tour für alle, die wissen möchten, was hinter den Kulissen eines internationalen Flughafens passiert.",
+      footnote: "Wegen der Länge der Tour entfällt die Kaffeepause."
+    },
+    {
+      title: "Von der Datensouveränität zur digitalen Handlungsfähigkeit: Eine Schweizer Geschichte über die Zukunft der Cloud",
+      speakers: ["Patrik Meier", "Daniel Schmutz"],
+      desc: "Sie starten am Morgen Ihr Gerät und der Login zur Gemeinde (oder irgendeines Dienstleisters) funktioniert nicht mehr. Nicht wegen eines Cyberangriffs. Nicht wegen eines technischen Fehlers. Sondern weil ein externer ausländischer Anbieter seinen Dienst nicht mehr bereitstellt, allenfalls sogar politisch motiviert. Innerhalb weniger Minuten könnten Menschen keine Behördendienstleistungen mehr nutzen, Mitarbeitende sich nicht anmelden, digitale Prozesse stehen still – nicht weil die Daten verloren wären, sondern weil die digitale Infrastruktur nicht mehr verfügbar wäre. Heute sprechen wir häufig über Datensouveränität: \"Wo liegen unsere Daten?\" Das ist wichtig, aber in Wahrheit die falsche Frage. Die entscheidende Frage lautet: Sind wir als Schweiz auch morgen noch handlungsfähig?"
+    }
+  ];
+
+  const round2 = [
+    {
+      title: "AI in Health – Chancen, Herausforderungen und Praxisbeispiele",
+      speakers: ["Martin Beyer"],
+      desc: "Künstliche Intelligenz verändert das Gesundheitswesen grundlegend – von der Diagnostik über personalisierte Therapien bis hin zur Optimierung klinischer Prozesse. In dieser interaktiven Breakout-Session beleuchten wir aktuelle Entwicklungen, zeigen konkrete Anwendungsfälle sowie die damit verbundenen Chancen und Herausforderungen auf. Ziel ist es, Impulse zu geben, Erfahrungen auszutauschen und neue Perspektiven für die Zukunft der Gesundheitsversorgung zu entwickeln."
+    },
+    {
+      title: "Vom Denken zum Handeln: Industrial AI Cloud für die nächste KI-Welle",
+      speakers: ["Sven Giesselbach", "Maja-Olivia Himmer"],
+      desc: "Der Bedarf an souveräner, verfügbarer KI-Infrastruktur steigt rasant. Die Industrial AI Cloud in München ist Europas Antwort darauf: GPU-Power für Agentic AI, die sensible Workloads autonom steuert und die Grundlage für industrielle KI in der physischen Welt schafft – von digitalen Zwillingen und Simulationen bis hin zu Robotik und Physical AI. Konkrete Use Cases und Demos zeigen, wie daraus skalierbare industrielle Wertschöpfung entsteht."
+    },
+    {
+      title: "T-Cloud local – Globale Innovation, maximale Souveränität",
+      speakers: ["Sascha Smets"],
+      desc: "T Cloud local bringt Public Cloud Services direkt ins eigene Rechenzentrum. Als lokale Erweiterung der Public Cloud ermöglicht T Cloud local Unternehmen, moderne Cloud Services mit der gleichen Benutzererfahrung, den gleichen APIs und dem gleichen Betriebsmodell zu nutzen – bei voller Datenhoheit und niedriger Latenz. Betrieb, Wartung, Disaster Recovery und Lifecycle Management erfolgen zentral und vollständig gemanagt, während Daten und Systeme vor Ort bleiben. Damit eignet sich T Cloud local ideal für regulierte Branchen, kritische Anwendungen und hybride Architekturen – Cloud-Innovation ohne Standort- oder Kontrollkompromisse."
+    },
+    {
+      title: "Identity ist der neue Perimeter – warum klassische Security-Modelle nicht mehr reichen",
+      speakers: ["Aldo Izard-Gosch"],
+      desc: "Cloud, SaaS, Remote Work, APIs, DevOps und AI verändern die Art, wie Unternehmen Zugriffe steuern. Der klassische Netzwerkperimeter reicht nicht mehr aus. Identity wird zum zentralen Kontrollpunkt für Sicherheit, Governance und Compliance. Die Session zeigt, warum neben menschlichen Benutzern auch Non-Human Identities wie Service Accounts, Tokens, APIs, Workloads und AI-Agenten immer wichtiger werden. Diese Identitäten sind oft privilegiert und schwer zu überwachen. Im Fokus stehen daher Prinzipien wie Sichtbarkeit, Least Privilege, Secret Management, Monitoring und klare Governance für AI-Systeme."
+    },
+    {
+      title: "KI verbinden, kontrollieren, skalieren – warum Souveränität bei der Konnektivität beginnt",
+      speakers: ["Andy Sailer", "Sven Walther"],
+      desc: "Viele Unternehmen haben KI erfolgreich im Einsatz – aber wenige haben daraus ein skalierbares Geschäftsmodell gemacht. Der Unterschied liegt nicht im Modell. Er liegt darin, wer die Kontrolle über AI-Services, Zugriffe und Datenflüsse behält – und wer damit Wert schöpft. Digitale Souveränität bedeutet nicht nur, KI sicher zu betreiben, sondern auch die eigene KI-Wertschöpfung aktiv zu gestalten: mit klaren API-Strategien, steuerbaren Zugriffsmodellen und der Fähigkeit, AI-Services intern wie extern zu monetarisieren. Diese Session zeigt, wie Unternehmen den Schritt von der AI-Initiative zum zukunftsfähigen Geschäftsmodell gehen – und welche Architekturentscheidungen dabei den Unterschied machen.",
+      footnote: "Titel laut Anmeldeformular; in der Programmbeschreibung der Website auch als „Von der AI-Initiative zum Geschäftsmodell\" gelistet."
+    },
+    {
+      title: "Widerstandsfähig. KI-sicher. Nachweisbar: Warum Cyber-Resilienz erst der Anfang ist",
+      speakers: ["Christoph Linden"],
+      desc: "Was nützt die beste KI-Strategie, wenn Ihre Daten nicht wiederherstellbar sind – und Sie es nicht beweisen können? Cyber-Resilienz ist keine Option, sondern die Grundlage jeder zukunftsfähigen IT-Strategie. Gleichzeitig entsteht bereits die nächste Herausforderung: KI-Agenten und autonome Systeme, die auf integre, verfügbare Daten angewiesen sind – rund um die Uhr, ohne Kompromisse. In dieser Session erfahren Sie, wie Unternehmen Resilienz konsequent weiterdenken: von der bewährten Five-Steps-Methodik über die Absicherung von KI-Workloads bis hin zu automatisierten Recovery-Prozessen. Im Fokus steht der dokumentierte Nachweis der Wiederherstellbarkeit – nicht als IT-Kennzahl, sondern als Geschäftsstrategie."
+    },
+    {
+      title: "265'000+ Pentests später: Warum AI der beste Verteidiger gegen AI-gestützte Cyberangriffe ist",
+      speakers: ["Geert Houben"],
+      desc: "Cyberkriminelle denken wie Angreifer – Ihre Sicherheitsstrategie sollte das auch. Während klassische Schwachstellenscans lediglich potenzielle Risiken aufzeigen und manuelle Penetrationstests nur eine Momentaufnahme liefern, validiert autonomes Pentesting kontinuierlich, welche Angriffswege in Ihrer Umgebung tatsächlich ausnutzbar sind. Basierend auf den Erkenntnissen aus über 265'000 autonom durchgeführten Penetrationstests erfahren Sie, warum Unternehmen ihre Sicherheitsstrategie von einer Checklisten-Mentalität hin zu Continuous Security Validation weiterentwickeln müssen – inklusive Live-Demonstration."
+    },
+    {
+      title: "Flughafen Tour: Weg des Gepäcks",
+      subtitle: "Hinter den Kulissen (max. 15 Personen)",
+      tour: true,
+      booked: true,
+      desc: "Erleben Sie auf dieser spannenden 90-minütigen Führung einen exklusiven Blick hinter die Kulissen des Flughafens Zürich. Verfolgen Sie den Weg eines Koffers von der Gepäckaufgabe bis zum Flugzeug und entdecken Sie die hochmoderne Gepäcksortieranlage mit ihren kilometerlangen Förderbändern, automatischen Scannern und Sortiersystemen. Begleitet von erfahrenen Guides erhalten Sie faszinierende Einblicke in die Prozesse des Gepäcktransports, die Verladung der Container sowie die Arbeit von Lost & Found.",
+      footnote: "Startet bereits ab 14:45 Uhr (Fortsetzung der Tour aus Runde 1) – die Kaffeepause entfällt."
+    },
+    {
+      title: "Mensch trifft Maschine: AI Session mit humanoidem Roboter",
+      speakers: ["Ralf Schneider"],
+      desc: "Was passiert, wenn künstliche Intelligenz einen Körper bekommt? In dieser interaktiven Breakout-Session erleben die Teilnehmenden gemeinsam mit einem humanoiden Roboter, wie Technologie, KI und menschliche Zusammenarbeit künftig zusammenspielen könnten. Der Roboter wird dabei nicht nur vorgeführt – er wird aktiv in die Session eingebunden. Gemeinsam testen wir, was heute bereits möglich ist, wo die Grenzen liegen und welche Chancen sich daraus für Unternehmen und Mitarbeitende ergeben.",
+      footnote: "Laut Anmeldeformular: „Details folgen in Kürze.\""
+    }
+  ];
+
+  function renderSession(s) {
+    const badges = [];
+    if (s.tour) {
+      badges.push('<span class="badge tour">Tour</span>');
+    }
+    if (s.booked) {
+      badges.push('<span class="badge booked">Ausgebucht</span>');
+    }
+    badges.push('<span class="badge room">' + ROOM_TBA + '</span>');
+
+    const speakerLine = s.speakers
+      ? '<p class="speakers"><span class="icon">🎤</span>' + s.speakers.join(', ') + '</p>'
+      : (s.subtitle ? '<p class="speakers">' + s.subtitle + '</p>' : '');
+
+    const footnote = s.footnote ? '<p class="footnote">' + s.footnote + '</p>' : '';
+
+    return (
+      '<div class="card' + (s.booked ? ' booked' : '') + '">' +
+        '<div class="card-head">' +
+          '<div class="badges">' + badges.join('') + '</div>' +
+          '<h2 class="title">' + s.title + '</h2>' +
+          speakerLine +
+        '</div>' +
+        '<details class="desc">' +
+          '<summary>Beschreibung <span class="chev">▾</span></summary>' +
+          '<div class="body"><p>' + s.desc + '</p>' + footnote + '</div>' +
+        '</details>' +
+      '</div>'
+    );
+  }
+
+  document.getElementById('round-1-list').innerHTML = round1.map(renderSession).join('');
+  document.getElementById('round-2-list').innerHTML = round2.map(renderSession).join('');
+
+  document.querySelectorAll('nav.rounds button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('nav.rounds button').forEach(function (b) { b.classList.remove('active'); });
+      document.querySelectorAll('.round-panel').forEach(function (p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('round-' + btn.dataset.round).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>
