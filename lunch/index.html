@@ -94,8 +94,7 @@
     letter-spacing: 0.04em;
   }
 
-  #lunch-list > h2.course-label:first-child,
-  #apero-list > h2.course-label:first-child {
+  #lunch-list > h2.course-label:first-child {
     margin-top: 4px;
   }
 
@@ -231,33 +230,18 @@
     }
   ];
 
-  const aperoCourses = [
-    {
-      label: "Vorspeise",
-      items: [
-        { t: "Vegane Sushi-Rolle", d: "mit Avocado, Gurke und Sesam-Sojasauce", n: "(gluten frei)" },
-        { t: "Randen-Hummus", d: "mit schwarzem Sesam und Mini-Pita-Brot", n: "(laktose frei) (enthält gluten)" },
-        { t: "Rinds-Tatar", m: "(ch)", d: "mit Kresse, Lachskaviar und geröstetem Brioche", n: "(enthält gluten/laktose)" },
-        { t: "Rauchlachs-Trifle", d: "mit Rahmgurken, Dill-Öl und Ahorn-Granola", n: "(gluten frei) (enthält laktose)" }
-      ]
-    },
-    {
-      label: "Hauptspeise",
-      items: [
-        { t: "Hausgemachte Käsespätzle", d: "mit Röstzwiebeln und Bergkäse", n: "(enthält gluten/laktose)" },
-        { t: "Meeresfrüchte Pfanne", d: "mit Oliven, Tomaten und Kürbis-Kartoffelpüree", n: "(gluten frei) (enthält laktose)" },
-        { t: "Hausgemachte saisonale Bratwurst", d: "mit geschmortem Federkohl und Kartoffeln", n: "(gluten/laktose frei)" },
-        { t: "Pulled-Duck-Sandwich", d: "mit Rotkohl-Coleslaw, Preiselbeer-Mayonaisse und Kresse", n: "(enthält gluten/laktose)" }
-      ]
-    },
-    {
-      label: "Dessert",
-      items: [
-        { t: "Apfel-Cheesecake-Tart", d: "mit Vanille-Creme und Karamell", n: "(enthält gluten/laktose/nüsse)" },
-        { t: "Tonka-Panna Cotta", d: "mit Kirsch-Kompott", n: "(vegan/glutenfrei/nussfrei)" },
-        { t: "Toblerone-Mousse-Schnitte", d: "mit gerösteten Haselnüssen", n: "(enthält gluten/laktose/nüsse)" }
-      ]
-    }
+  const aperoItems = [
+    { t: "Vegane Sushi-Rolle", d: "mit Avocado, Gurke und Sesam-Sojasauce", n: "(gluten frei)" },
+    { t: "Randen-Hummus", d: "mit schwarzem Sesam und Mini-Pita-Brot", n: "(laktose frei) (enthält gluten)" },
+    { t: "Rinds-Tatar", m: "(ch)", d: "mit Kresse, Lachskaviar und geröstetem Brioche", n: "(enthält gluten/laktose)" },
+    { t: "Rauchlachs-Trifle", d: "mit Rahmgurken, Dill-Öl und Ahorn-Granola", n: "(gluten frei) (enthält laktose)" },
+    { t: "Hausgemachte Käsespätzle", d: "mit Röstzwiebeln und Bergkäse", n: "(enthält gluten/laktose)" },
+    { t: "Meeresfrüchte Pfanne", d: "mit Oliven, Tomaten und Kürbis-Kartoffelpüree", n: "(gluten frei) (enthält laktose)" },
+    { t: "Hausgemachte saisonale Bratwurst", d: "mit geschmortem Federkohl und Kartoffeln", n: "(gluten/laktose frei)" },
+    { t: "Pulled-Duck-Sandwich", d: "mit Rotkohl-Coleslaw, Preiselbeer-Mayonaisse und Kresse", n: "(enthält gluten/laktose)" },
+    { t: "Apfel-Cheesecake-Tart", d: "mit Vanille-Creme und Karamell", n: "(enthält gluten/laktose/nüsse)" },
+    { t: "Tonka-Panna Cotta", d: "mit Kirsch-Kompott", n: "(vegan/glutenfrei/nussfrei)" },
+    { t: "Toblerone-Mousse-Schnitte", d: "mit gerösteten Haselnüssen", n: "(enthält gluten/laktose/nüsse)" }
   ];
 
   function renderItem(it) {
@@ -273,7 +257,7 @@
   }
 
   document.getElementById('lunch-list').innerHTML = lunchCourses.map(renderCourse).join('');
-  document.getElementById('apero-list').innerHTML = aperoCourses.map(renderCourse).join('');
+  document.getElementById('apero-list').innerHTML = aperoItems.map(renderItem).join('');
 
   document.querySelectorAll('nav.rounds button').forEach(function (btn) {
     btn.addEventListener('click', function () {
