@@ -143,17 +143,6 @@
   .round-panel { display: none; }
   .round-panel.active { display: block; }
 
-  .round-note {
-    font-size: 12.5px;
-    color: var(--text-muted);
-    background: var(--surface-alt);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin: 4px 0 14px;
-    line-height: 1.5;
-  }
-
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -284,28 +273,9 @@
     font-style: italic;
   }
 
-  footer.page {
-    max-width: 640px;
-    margin: 24px auto 0;
-    padding: 0 16px;
-    font-size: 11.5px;
-    color: var(--text-muted);
-    line-height: 1.6;
-    text-align: center;
-  }
-
-  footer.page a {
-    color: var(--text-muted);
-  }
 </style>
 </head>
 <body>
-
-<header class="top">
-  <p class="eyebrow">T-Systems Zukunftsarena 2026</p>
-  <h1>Breakout-Sessions</h1>
-  <p class="meta">Montag, 14. September 2026 · The Circle Convention Center, Zürich Flughafen</p>
-</header>
 
 <nav class="rounds">
   <button class="active" data-round="1">
@@ -321,20 +291,14 @@
 <main>
 
   <section class="round-panel active" id="round-1">
-    <p class="round-note">8 Breakout-Sessions zur Wahl, jeweils parallel. Räume werden vom Veranstalter noch bekannt gegeben.</p>
     <div id="round-1-list"></div>
   </section>
 
   <section class="round-panel" id="round-2">
-    <p class="round-note">9 Breakout-Sessions zur Wahl, jeweils parallel. Räume werden vom Veranstalter noch bekannt gegeben.</p>
     <div id="round-2-list"></div>
   </section>
 
 </main>
-
-<footer class="page">
-  Quelle: <a href="https://zukunftsarena.ch/de" target="_blank" rel="noopener">zukunftsarena.ch/de</a> · Stand: 25.08.2026 · Änderungen vorbehalten
-</footer>
 
 <script>
   const ROOM_TBA = "Raum: wird noch bekannt gegeben";
