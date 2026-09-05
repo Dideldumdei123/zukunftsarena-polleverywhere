@@ -408,7 +408,9 @@
     if (s.booked) {
       badges.push('<span class="badge booked">Ausgebucht</span>');
     }
-    badges.push('<span class="badge room">' + (s.room ? s.room + ' · ' + s.capacity + ' Plätze' : ROOM_TBA) + '</span>');
+    if (!s.tour) {
+      badges.push('<span class="badge room">' + (s.room ? s.room + ' · ' + s.capacity + ' Plätze' : ROOM_TBA) + '</span>');
+    }
 
     const speakerLine = s.speakers
       ? '<p class="speakers"><span class="icon">🎤</span>' + s.speakers.join(', ') + '</p>'
