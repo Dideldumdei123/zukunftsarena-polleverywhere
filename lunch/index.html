@@ -123,13 +123,14 @@
     color: var(--text-muted);
   }
 
-  .sponsors {
-    margin-top: 18px;
-    padding-top: 14px;
-    border-top: 1px solid var(--border);
+  .sponsors-top {
+    padding: 12px 12px 14px;
+    border-bottom: 1px solid var(--border);
+    max-width: 640px;
+    margin: 0 auto;
   }
 
-  .sponsors p.label {
+  .sponsors-top p.label {
     margin: 0 2px 10px;
     font-size: 12px;
     font-weight: 700;
@@ -169,6 +170,21 @@
 </head>
 <body>
 
+<div class="sponsors-top">
+  <p class="label">Das Lunch wird präsentiert von</p>
+  <div class="sponsor-row">
+    <a class="sponsor-chip" href="https://www.redhat.com" target="_blank" rel="noopener noreferrer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 555 175" style="height:20px;width:auto;"><path fill="#e00" d="M144.7,87.11c1.57,7.43,1.57,8.21,1.57,9.19,0,12.71-14.28,19.75-33.05,19.75-42.43,0-79.59-24.83-79.59-41.26A16.78,16.78,0,0,1,35,68.14c-15.25.78-35,3.52-35,20.92,0,28.55,67.66,63.75,121.24,63.75,41.06,0,51.43-18.57,51.43-33.24,0-11.54-10-24.64-28-32.46M115.18,97.47c11.34,0,27.76-2.34,27.76-15.84a12.92,12.92,0,0,0-.28-3.1l-6.75-29.36c-1.57-6.45-2.94-9.38-14.28-15.05-8.8-4.5-28-11.93-33.63-11.93-5.28,0-6.85,6.84-13.11,6.84C68.83,29,64.34,24,58.67,24c-5.48,0-9,3.71-11.74,11.34,0,0-7.62,21.51-8.6,24.64a5.48,5.48,0,0,0-.2,1.76c0,8.36,32.92,35.78,77.05,35.78"/><path d="M144.7,87.11c1.57,7.43,1.57,8.21,1.57,9.19,0,12.71-14.28,19.75-33.05,19.75-42.43,0-79.59-24.83-79.59-41.26A16.78,16.78,0,0,1,35,68.14l3.33-8.21a5.48,5.48,0,0,0-.2,1.76c0,8.36,32.92,35.78,77.05,35.78,11.34,0,27.76-2.34,27.76-15.84a12.92,12.92,0,0,0-.28-3.1l2,8.58Z"/><path d="M204.57,121.28H221V97h12.5l12.59,24.33h18.32L249.69,94.57a20.21,20.21,0,0,0,12.59-18.8c0-12-9.44-21.27-23.56-21.27H204.57v66.78Zm32.62-52.76c5.44,0,8.49,3.44,8.49,7.54s-3.05,7.54-8.49,7.54H221V68.52Zm26.62,27.57c0,14.69,12,26.14,27.47,26.14a30.28,30.28,0,0,0,21.08-7.63l-10.2-9.06c-2.39,2.48-5.92,3.81-10.11,3.81a13.06,13.06,0,0,1-12.41-8h36V97.52c0-16-10.78-27.57-25.47-27.57a25.92,25.92,0,0,0-26.33,26.14m26-13.54a11.15,11.15,0,0,1,10.59,8H279.36c1.52-5.06,5.34-8,10.49-8m70,38.73h15.27V51.16L359.68,54.5v19a25.67,25.67,0,0,0-12.88-3.34c-14.69,0-26.23,11.36-26.23,25.86a25.63,25.63,0,0,0,25.76,26,22.75,22.75,0,0,0,13.54-4.39v3.72ZM335.74,96c0-7.25,5.72-12.79,13.26-12.79a15.64,15.64,0,0,1,10.68,3.91v17.65a14.84,14.84,0,0,1-10.68,4c-7.44,0-13.26-5.53-13.26-12.78m62.52,25.28h16.41V95.14h27.48v26.14h16.4V54.5h-16.4V80.16H414.67V54.5H398.26v66.78Zm83.86.86a23.63,23.63,0,0,0,13.93-3.92v3.06h15.26V88.94c0-12.31-8.3-19.08-22.13-19.08-7.73,0-15.36,1.81-23.57,5.53l5.54,11.35c5.91-2.48,10.87-4,15.26-4,6.39,0,9.64,2.48,9.64,7.53v2.48a45.07,45.07,0,0,0-11.45-1.43c-13,0-20.8,5.44-20.8,15.17,0,8.87,7.06,15.65,18.32,15.65M477.4,106.2c0-3.33,3.34-5,8.4-5a38.6,38.6,0,0,1,9.15,1.15v6.49a19.51,19.51,0,0,1-9.63,2.38c-5,0-7.92-1.91-7.92-5.06m48-.28c0,10.78,6.48,16,18.31,16a47.18,47.18,0,0,0,10.78-1.53v-12.5a22.5,22.5,0,0,1-7,1c-4.87,0-6.68-1.53-6.68-6.1V83.69H555V70.81H540.88V54.5l-15.45,3.34v13H515.22V83.69h10.21v22.23Z"/></svg>
+    </a>
+    <a class="sponsor-chip" href="https://www.fortinet.com" target="_blank" rel="noopener noreferrer">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAa0AAAB1CAMAAADKkk7zAAAAn1BMVEX///8AAADaKRzt7e3Ly8v97+7aJReLi4vqkIvZGgXGxsbe3t4PDw8FBQXh4eHy8vL5+fmVlZV8fHxeXl5QUFAzMzNxcXHnenM5OTn419WmpqbfU0vXAADaGgCvr69vb2/dPjRCQkL88vHbIxEXFxfdNyssLCyNjY2enp65ubnU1NT76efpiYPxtbHuo57mdW7gTUPrl5LhXlfjaWLwr6vzFuNfAAAD8klEQVR4nO2c6XqiMBRAkSpW7bjWXXTUams77bSdef9nm+ISCGuCVNE55x94kxtzPiABgmEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwDlp3qjS9JZalHYsnK2SzHafCGjqppPi1VvW8FeQnKrh74xGYhE3gVJs05/hSIoFVaqizMvHeGVtqfSdzZ9Ly8Ny7MSMd/vM1edbyZOulZyn03oW4c21SsuKTuij2Kyrpur2NnJ3tlWyFQpbyz2VyOn5bX3Y9peGLXtb+60dB1u7LWtpW69atr6Y1fVtlcWmsi2Hpyu39WfiMRNiy9rZcvdZk1tNWyJZGls/tGwV5p7D6/ps9W1T05ZpTv7q2toZOIWtwtq9Ul6dreHE1Ldl2Ydrl7KtXZecwlahc722+ssUtkz7TdvW7GS2CqNrtbWwrDS2lp9N3S4s3JzM1uAwlL82Wy/SiVDZlrVaaNtyRmvNO5XIY22JAZSOrZlK5MjIFtfWqBhLdXsxli9boSN4SxrB7/dVSr4u/DENzbKZi/ZsT4Xih2dxlM2r/kKNBFuBAltaDyKgHbD1HNcV2/NETWy63jahffYttooq4cOJdyK8nx2v7KUH+90JHEszZjHMcG3VwhM0RHvm8sx1cNh/H14wxlbgnoX/rx+qdG2p9MWBx6RE2aFpK/Qu09CHs2/hC9wXT7TlnmEeomyF387Rt2XcHwIG+x3pbJUTE2WGrq0jyZWtziGgu68SWzLYOgpsXbGtl1+3Eq9RgW9y3K1/BI+tNGiPCSteJr+jAt9tb5w9UR0TujOs7jltdcJph+U+i62nYjUKt2eHIbPjUOTZsRkcwY9CM23u3Q6TKzytrQgGubEVQ1uEZ2YrmZZcYS5szS/BVlmEn9BWXa4wyZaYo2JLhJ/OVs9XIceWkWNb/n+OLSO/tgIjVGwZubXVDXRLLmxdxJjQayuj+VYS6/OeCdu9MGblsGrOYusuEo+tzO5lRKRzdfmmW9zLcHBtTeu1KLJ7qObOjjeh6aruI0JfUmwZ+burOxXt2cg/YMvIn62aaI/vnQZsGdk8O45btaD77BhbcWTxXkbMqgXt9zKwFYe2LWkalbxqYcfF2Yp958nX9PzaKmX1PmHObcXSlqvJr62FmepdXSvwru4l2/LNkfNry+hX0tiyP/bFsXUUurZSrTExg2tMsJUG7flWRuu3sJUG/dlxNmsjsZWGFPcysll3/G22guuO/2tbumv6F56i32crZk1/oq31pdhqpvq2Qwbfy4iqOqo94vsUEV0S872MqFSBIorfy2gkVAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeeEf1HmRN3jcBKEAAAAASUVORK5CYII=" alt="Fortinet">
+    </a>
+    <a class="sponsor-chip" href="https://www.xorlab.com" target="_blank" rel="noopener noreferrer">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWYAAACNCAMAAACzDCDRAAAAclBMVEX///8AAAD7+/s+Pj5jY2PZ2dmKiors7Oypqal9fX2YmJijo6MeHh41NTXCwsLj4+NPT09ycnLR0dFtbW2Dg4NqamqUlJSJiYmbm5v09PQuLi7e3t5CQkJgYGDKysqvr6+4uLgmJiZXV1cQEBApKSkMDAytdOdvAAAEmUlEQVR4nO2c6VriMBRAKSDLoCKoYNkEnXn/V5xBSHrTJmnoOuU75581Nzc900naLPZ6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0BbPq18X4hKVxKPVD6Pnytp1Z0yjK+MSlYxVJavK2nVnVKv5V2XtujPQ3AhobgQ0NwKaGwHNjYDmRkBzI6C5Ee5S82ySW2R0rL8ZgnvU/BFFeZ5HUXTMXOz7sVYUGJPVnBNoS2lqvq2d1bM6t8TveZQt8rD+GvjZ7Sep+bXt+sUb8TRVJTOaHzY52S4ppw8inaF57qxgsSwhL5i3S1N8nkeXIrNsVA6PS0s1Ht5V0azmoHz/mCb5TM2+tPU/0a8q18xZRCtNJhQXoXe9tFTjuV9VtrjmaK8TBmuOnirT6eAlyeXyLPSoRyX8pne6mm1A6So0R0dVSbjm2gdJ+VjaPU9FCfU4h3UZP8xVPeuAwpVoHqhKbtAcVW/WbdHm2Wa5Nwi/6eMtMZVojlRPe4tmOXTWgvT44f1t0jU/hd+zHlofAwpXo1n9B7pFc/3LhbLfSHuWvxMranVpHqrCd6jZ49lhWWs+LVzsVVhG8+l96GKvc2Q0b7+cUYqdV/PYWoGOaWLx2+VZXh/JAKX5xVmlfvoymt+dMYIiH9ufXs05MY3sMdAvz4ZneXVtlM/XvHRqHjpjBEU0Twpo1jHNbOWQRlWjhk7LaC7Ke8azxzKaCyOtrlI/v6ULo7kw+t3gx7P8aZopi+biSLPyazprGc1lSDwfejOfZTSX4uua8zx7qTwvbAXb0dw/fIzsvJ2LdUZz/0VbVp6tltvRPPF8rp+b3BnNl+lnNRM/c1puRbN37eU8wdYhzf88J+sdE5flNjQffJY7p3ks55xfXaVa0KzGjbvQ3N8ZT7PLc/OaY/88arc0988Tg7JvdjhpXnPA4kdnNMcXffJN48taEM0liJU9+d5sNfnfae7QC12cLD3Jr0CbyhY1T8dzC+dV1m5ojjfi6ZBzGhaXLWoeOWM6oXksh3Jzhm6X2fuE5oKMT4Zlc755kPaM5mKknuUzhufU1k40F8KwbFsLTHlGcxHm38KofWV7Y3hGcwHmf6yWzX0av6XnjmnO7llTNLhPw3jzd+86kp6V5t2Dg61uf9WaF1tXypVT81t+TO2at/Ye44L0vEnmfsvsoavlK9AgozmAujUbewD9O0JP2jOab2Qpc+Xtb/5WN1Bkf3M5zeM/jvotqN6tHx4S1XzMR6bK362/uV4bRsHo3folp/V/h6fUH1MF/mlqQqz9BJw92V4vHYObnxyeKal56kiQ5TVbSy4Daysq5FllCjhJtdWXgjvnpM8rqTm8o01aGQfHHG6TVoCrZ9+5wOvpHHE+w5jO8yD2npdd2V46UqT5FNWExjRx2viYZ/m6eG+cgolDDlOd5C2ri/teAPpFUuzTmO/tWQwezVeGoJjv/CPrVXAMOrOdHovHx5mfydIYVybXy0GvTofZ5IJRxfbTsetIsTpkhrK8mPXqWPPwp/kM+AsE/GVCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABogb9f61ABdhwD1wAAAABJRU5ErkJggg==" alt="xorlab">
+    </a>
+  </div>
+</div>
+
 <nav class="rounds">
   <button class="active" data-panel="lunch">Lunch</button>
   <button data-panel="apero">Apéro</button>
@@ -178,21 +194,6 @@
 
   <section class="round-panel active" id="panel-lunch">
     <div id="lunch-list"></div>
-
-    <div class="sponsors">
-      <p class="label">Präsentiert von</p>
-      <div class="sponsor-row">
-        <a class="sponsor-chip" href="https://www.redhat.com" target="_blank" rel="noopener noreferrer">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 555 175" style="height:20px;width:auto;"><path fill="#e00" d="M144.7,87.11c1.57,7.43,1.57,8.21,1.57,9.19,0,12.71-14.28,19.75-33.05,19.75-42.43,0-79.59-24.83-79.59-41.26A16.78,16.78,0,0,1,35,68.14c-15.25.78-35,3.52-35,20.92,0,28.55,67.66,63.75,121.24,63.75,41.06,0,51.43-18.57,51.43-33.24,0-11.54-10-24.64-28-32.46M115.18,97.47c11.34,0,27.76-2.34,27.76-15.84a12.92,12.92,0,0,0-.28-3.1l-6.75-29.36c-1.57-6.45-2.94-9.38-14.28-15.05-8.8-4.5-28-11.93-33.63-11.93-5.28,0-6.85,6.84-13.11,6.84C68.83,29,64.34,24,58.67,24c-5.48,0-9,3.71-11.74,11.34,0,0-7.62,21.51-8.6,24.64a5.48,5.48,0,0,0-.2,1.76c0,8.36,32.92,35.78,77.05,35.78"/><path d="M144.7,87.11c1.57,7.43,1.57,8.21,1.57,9.19,0,12.71-14.28,19.75-33.05,19.75-42.43,0-79.59-24.83-79.59-41.26A16.78,16.78,0,0,1,35,68.14l3.33-8.21a5.48,5.48,0,0,0-.2,1.76c0,8.36,32.92,35.78,77.05,35.78,11.34,0,27.76-2.34,27.76-15.84a12.92,12.92,0,0,0-.28-3.1l2,8.58Z"/><path d="M204.57,121.28H221V97h12.5l12.59,24.33h18.32L249.69,94.57a20.21,20.21,0,0,0,12.59-18.8c0-12-9.44-21.27-23.56-21.27H204.57v66.78Zm32.62-52.76c5.44,0,8.49,3.44,8.49,7.54s-3.05,7.54-8.49,7.54H221V68.52Zm26.62,27.57c0,14.69,12,26.14,27.47,26.14a30.28,30.28,0,0,0,21.08-7.63l-10.2-9.06c-2.39,2.48-5.92,3.81-10.11,3.81a13.06,13.06,0,0,1-12.41-8h36V97.52c0-16-10.78-27.57-25.47-27.57a25.92,25.92,0,0,0-26.33,26.14m26-13.54a11.15,11.15,0,0,1,10.59,8H279.36c1.52-5.06,5.34-8,10.49-8m70,38.73h15.27V51.16L359.68,54.5v19a25.67,25.67,0,0,0-12.88-3.34c-14.69,0-26.23,11.36-26.23,25.86a25.63,25.63,0,0,0,25.76,26,22.75,22.75,0,0,0,13.54-4.39v3.72ZM335.74,96c0-7.25,5.72-12.79,13.26-12.79a15.64,15.64,0,0,1,10.68,3.91v17.65a14.84,14.84,0,0,1-10.68,4c-7.44,0-13.26-5.53-13.26-12.78m62.52,25.28h16.41V95.14h27.48v26.14h16.4V54.5h-16.4V80.16H414.67V54.5H398.26v66.78Zm83.86.86a23.63,23.63,0,0,0,13.93-3.92v3.06h15.26V88.94c0-12.31-8.3-19.08-22.13-19.08-7.73,0-15.36,1.81-23.57,5.53l5.54,11.35c5.91-2.48,10.87-4,15.26-4,6.39,0,9.64,2.48,9.64,7.53v2.48a45.07,45.07,0,0,0-11.45-1.43c-13,0-20.8,5.44-20.8,15.17,0,8.87,7.06,15.65,18.32,15.65M477.4,106.2c0-3.33,3.34-5,8.4-5a38.6,38.6,0,0,1,9.15,1.15v6.49a19.51,19.51,0,0,1-9.63,2.38c-5,0-7.92-1.91-7.92-5.06m48-.28c0,10.78,6.48,16,18.31,16a47.18,47.18,0,0,0,10.78-1.53v-12.5a22.5,22.5,0,0,1-7,1c-4.87,0-6.68-1.53-6.68-6.1V83.69H555V70.81H540.88V54.5l-15.45,3.34v13H515.22V83.69h10.21v22.23Z"/></svg>
-        </a>
-        <a class="sponsor-chip" href="https://www.fortinet.com" target="_blank" rel="noopener noreferrer">
-          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAa0AAAB1CAMAAADKkk7zAAAAn1BMVEX///8AAADaKRzt7e3Ly8v97+7aJReLi4vqkIvZGgXGxsbe3t4PDw8FBQXh4eHy8vL5+fmVlZV8fHxeXl5QUFAzMzNxcXHnenM5OTn419WmpqbfU0vXAADaGgCvr69vb2/dPjRCQkL88vHbIxEXFxfdNyssLCyNjY2enp65ubnU1NT76efpiYPxtbHuo57mdW7gTUPrl5LhXlfjaWLwr6vzFuNfAAAD8klEQVR4nO2c6XqiMBRAkSpW7bjWXXTUams77bSdef9nm+ISCGuCVNE55x94kxtzPiABgmEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwDlp3qjS9JZalHYsnK2SzHafCGjqppPi1VvW8FeQnKrh74xGYhE3gVJs05/hSIoFVaqizMvHeGVtqfSdzZ9Ly8Ny7MSMd/vM1edbyZOulZyn03oW4c21SsuKTuij2Kyrpur2NnJ3tlWyFQpbyz2VyOn5bX3Y9peGLXtb+60dB1u7LWtpW69atr6Y1fVtlcWmsi2Hpyu39WfiMRNiy9rZcvdZk1tNWyJZGls/tGwV5p7D6/ps9W1T05ZpTv7q2toZOIWtwtq9Ul6dreHE1Ldl2Ydrl7KtXZecwlahc722+ssUtkz7TdvW7GS2CqNrtbWwrDS2lp9N3S4s3JzM1uAwlL82Wy/SiVDZlrVaaNtyRmvNO5XIY22JAZSOrZlK5MjIFtfWqBhLdXsxli9boSN4SxrB7/dVSr4u/DENzbKZi/ZsT4Xih2dxlM2r/kKNBFuBAltaDyKgHbD1HNcV2/NETWy63jahffYttooq4cOJdyK8nx2v7KUH+90JHEszZjHMcG3VwhM0RHvm8sx1cNh/H14wxlbgnoX/rx+qdG2p9MWBx6RE2aFpK/Qu09CHs2/hC9wXT7TlnmEeomyF387Rt2XcHwIG+x3pbJUTE2WGrq0jyZWtziGgu68SWzLYOgpsXbGtl1+3Eq9RgW9y3K1/BI+tNGiPCSteJr+jAt9tb5w9UR0TujOs7jltdcJph+U+i62nYjUKt2eHIbPjUOTZsRkcwY9CM23u3Q6TKzytrQgGubEVQ1uEZ2YrmZZcYS5szS/BVlmEn9BWXa4wyZaYo2JLhJ/OVs9XIceWkWNb/n+OLSO/tgIjVGwZubXVDXRLLmxdxJjQayuj+VYS6/OeCdu9MGblsGrOYusuEo+tzO5lRKRzdfmmW9zLcHBtTeu1KLJ7qObOjjeh6aruI0JfUmwZ+burOxXt2cg/YMvIn62aaI/vnQZsGdk8O45btaD77BhbcWTxXkbMqgXt9zKwFYe2LWkalbxqYcfF2Yp958nX9PzaKmX1PmHObcXSlqvJr62FmepdXSvwru4l2/LNkfNry+hX0tiyP/bFsXUUurZSrTExg2tMsJUG7flWRuu3sJUG/dlxNmsjsZWGFPcysll3/G22guuO/2tbumv6F56i32crZk1/oq31pdhqpvq2Qwbfy4iqOqo94vsUEV0S872MqFSBIorfy2gkVAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeeEf1HmRN3jcBKEAAAAASUVORK5CYII=" alt="Fortinet">
-        </a>
-        <a class="sponsor-chip" href="https://www.xorlab.com" target="_blank" rel="noopener noreferrer">
-          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWYAAACNCAMAAACzDCDRAAAAclBMVEX///8AAAD7+/s+Pj5jY2PZ2dmKiors7Oypqal9fX2YmJijo6MeHh41NTXCwsLj4+NPT09ycnLR0dFtbW2Dg4NqamqUlJSJiYmbm5v09PQuLi7e3t5CQkJgYGDKysqvr6+4uLgmJiZXV1cQEBApKSkMDAytdOdvAAAEmUlEQVR4nO2c6VriMBRAKSDLoCKoYNkEnXn/V5xBSHrTJmnoOuU75581Nzc900naLPZ6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0BbPq18X4hKVxKPVD6Pnytp1Z0yjK+MSlYxVJavK2nVnVKv5V2XtujPQ3AhobgQ0NwKaGwHNjYDmRkBzI6C5Ee5S82ySW2R0rL8ZgnvU/BFFeZ5HUXTMXOz7sVYUGJPVnBNoS2lqvq2d1bM6t8TveZQt8rD+GvjZ7Sep+bXt+sUb8TRVJTOaHzY52S4ppw8inaF57qxgsSwhL5i3S1N8nkeXIrNsVA6PS0s1Ht5V0azmoHz/mCb5TM2+tPU/0a8q18xZRCtNJhQXoXe9tFTjuV9VtrjmaK8TBmuOnirT6eAlyeXyLPSoRyX8pne6mm1A6So0R0dVSbjm2gdJ+VjaPU9FCfU4h3UZP8xVPeuAwpVoHqhKbtAcVW/WbdHm2Wa5Nwi/6eMtMZVojlRPe4tmOXTWgvT44f1t0jU/hd+zHlofAwpXo1n9B7pFc/3LhbLfSHuWvxMranVpHqrCd6jZ49lhWWs+LVzsVVhG8+l96GKvc2Q0b7+cUYqdV/PYWoGOaWLx2+VZXh/JAKX5xVmlfvoymt+dMYIiH9ufXs05MY3sMdAvz4ZneXVtlM/XvHRqHjpjBEU0Twpo1jHNbOWQRlWjhk7LaC7Ke8azxzKaCyOtrlI/v6ULo7kw+t3gx7P8aZopi+biSLPyazprGc1lSDwfejOfZTSX4uua8zx7qTwvbAXb0dw/fIzsvJ2LdUZz/0VbVp6tltvRPPF8rp+b3BnNl+lnNRM/c1puRbN37eU8wdYhzf88J+sdE5flNjQffJY7p3ks55xfXaVa0KzGjbvQ3N8ZT7PLc/OaY/88arc0988Tg7JvdjhpXnPA4kdnNMcXffJN48taEM0liJU9+d5sNfnfae7QC12cLD3Jr0CbyhY1T8dzC+dV1m5ojjfi6ZBzGhaXLWoeOWM6oXksh3Jzhm6X2fuE5oKMT4Zlc755kPaM5mKknuUzhufU1k40F8KwbFsLTHlGcxHm38KofWV7Y3hGcwHmf6yWzX0av6XnjmnO7llTNLhPw3jzd+86kp6V5t2Dg61uf9WaF1tXypVT81t+TO2at/Ye44L0vEnmfsvsoavlK9AgozmAujUbewD9O0JP2jOab2Qpc+Xtb/5WN1Bkf3M5zeM/jvotqN6tHx4S1XzMR6bK362/uV4bRsHo3folp/V/h6fUH1MF/mlqQqz9BJw92V4vHYObnxyeKal56kiQ5TVbSy4Daysq5FllCjhJtdWXgjvnpM8rqTm8o01aGQfHHG6TVoCrZ9+5wOvpHHE+w5jO8yD2npdd2V46UqT5FNWExjRx2viYZ/m6eG+cgolDDlOd5C2ri/teAPpFUuzTmO/tWQwezVeGoJjv/CPrVXAMOrOdHovHx5mfydIYVybXy0GvTofZ5IJRxfbTsetIsTpkhrK8mPXqWPPwp/kM+AsE/GVCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABogb9f61ABdhwD1wAAAABJRU5ErkJggg==" alt="xorlab">
-        </a>
-      </div>
-    </div>
   </section>
 
   <section class="round-panel" id="panel-apero">
@@ -206,42 +207,42 @@
     {
       label: "Vorspeise",
       items: [
-        { t: "Couscous-Salat", d: "mit getrockneten Früchten, Granatapfel und frischer Minze", n: "(vegan) (enthält gluten)" },
-        { t: "Geräucherte Forelle", m: "(dk)", d: "mit Rande, Meerrettich und Dill", n: "(gluten frei) (enthält laktose)" },
-        { t: "Rosa gegartes Rind", m: "(ch)", d: "mit Pilzen, Raddicchio und Belper Knolle", n: "(gluten frei) (enthält laktose)" },
-        { t: "Karotten-Ingwersuppe", d: "mit kandiertem Ingwer", n: "(vegan/gluten frei)" }
+        { t: "Couscous-Salat", d: "mit getrockneten Früchten, Granatapfel und frischer Minze", n: "(vegan) (enthält Gluten)" },
+        { t: "Geräucherte Forelle", m: "(dk)", d: "mit Rande, Meerrettich und Dill", n: "(glutenfrei) (enthält Laktose)" },
+        { t: "Rosa gegartes Rind", m: "(ch)", d: "mit Pilzen, Radicchio und Belper Knolle", n: "(glutenfrei) (enthält Laktose)" },
+        { t: "Karotten-Ingwersuppe", d: "mit kandiertem Ingwer", n: "(vegan/glutenfrei)" }
       ]
     },
     {
       label: "Hauptspeise",
       items: [
-        { t: "Gebratene Maispouladenbrust", m: "(fr)", d: "mit Lila Rüebli und Rosmarin-Jus", n: "(gluten/laktose frei)" },
-        { t: "Gebratens schottisches Lachsfilet", d: "auf Mangold", n: "(gluten/laktose frei)" },
-        { t: "Gebratenen Reis", d: "mit asiatischem Gemüse und frischem Koriander", n: "(vegan/gluten frei)" },
-        { t: "Röstkartoffeln", n: "(vegan/gluten frei)" }
+        { t: "Gebratene Maispoulardenbrust", m: "(fr)", d: "mit lila Rüebli und Rosmarin-Jus", n: "(glutenfrei/laktosefrei)" },
+        { t: "Gebratenes schottisches Lachsfilet", d: "auf Mangold", n: "(glutenfrei/laktosefrei)" },
+        { t: "Gebratener Reis", d: "mit asiatischem Gemüse und frischem Koriander", n: "(vegan/glutenfrei)" },
+        { t: "Röstkartoffeln", n: "(vegan/glutenfrei)" }
       ]
     },
     {
       label: "Dessert",
       items: [
         { t: "Vanille-Blaubeer-Trifle", d: "mit Cassis", n: "(vegan/glutenfrei/nussfrei)" },
-        { t: "Schokoladen-Tart", d: "mit weisser Schokoladen-Brombeer-Cremeux", n: "(enthält gluten/laktose/nüsse)" }
+        { t: "Schokoladen-Tart", d: "mit weisser Schokoladen-Brombeer-Cremeux", n: "(enthält Gluten/Laktose/Nüsse)" }
       ]
     }
   ];
 
   const aperoItems = [
-    { t: "Vegane Sushi-Rolle", d: "mit Avocado, Gurke und Sesam-Sojasauce", n: "(gluten frei)" },
-    { t: "Randen-Hummus", d: "mit schwarzem Sesam und Mini-Pita-Brot", n: "(laktose frei) (enthält gluten)" },
-    { t: "Rinds-Tatar", m: "(ch)", d: "mit Kresse, Lachskaviar und geröstetem Brioche", n: "(enthält gluten/laktose)" },
-    { t: "Rauchlachs-Trifle", d: "mit Rahmgurken, Dill-Öl und Ahorn-Granola", n: "(gluten frei) (enthält laktose)" },
-    { t: "Hausgemachte Käsespätzle", d: "mit Röstzwiebeln und Bergkäse", n: "(enthält gluten/laktose)" },
-    { t: "Meeresfrüchte Pfanne", d: "mit Oliven, Tomaten und Kürbis-Kartoffelpüree", n: "(gluten frei) (enthält laktose)" },
-    { t: "Hausgemachte saisonale Bratwurst", d: "mit geschmortem Federkohl und Kartoffeln", n: "(gluten/laktose frei)" },
-    { t: "Pulled-Duck-Sandwich", d: "mit Rotkohl-Coleslaw, Preiselbeer-Mayonaisse und Kresse", n: "(enthält gluten/laktose)" },
-    { t: "Apfel-Cheesecake-Tart", d: "mit Vanille-Creme und Karamell", n: "(enthält gluten/laktose/nüsse)" },
+    { t: "Vegane Sushi-Rolle", d: "mit Avocado, Gurke und Sesam-Sojasauce", n: "(glutenfrei)" },
+    { t: "Randen-Hummus", d: "mit schwarzem Sesam und Mini-Pita-Brot", n: "(laktosefrei) (enthält Gluten)" },
+    { t: "Rinds-Tatar", m: "(ch)", d: "mit Kresse, Lachskaviar und gerösteter Brioche", n: "(enthält Gluten/Laktose)" },
+    { t: "Rauchlachs-Trifle", d: "mit Rahmgurken, Dill-Öl und Ahorn-Granola", n: "(glutenfrei) (enthält Laktose)" },
+    { t: "Hausgemachte Käsespätzle", d: "mit Röstzwiebeln und Bergkäse", n: "(enthält Gluten/Laktose)" },
+    { t: "Meeresfrüchte-Pfanne", d: "mit Oliven, Tomaten und Kürbis-Kartoffelpüree", n: "(glutenfrei) (enthält Laktose)" },
+    { t: "Hausgemachte saisonale Bratwurst", d: "mit geschmortem Federkohl und Kartoffeln", n: "(glutenfrei/laktosefrei)" },
+    { t: "Pulled-Duck-Sandwich", d: "mit Rotkohl-Coleslaw, Preiselbeer-Mayonnaise und Kresse", n: "(enthält Gluten/Laktose)" },
+    { t: "Apfel-Cheesecake-Tart", d: "mit Vanille-Creme und Karamell", n: "(enthält Gluten/Laktose/Nüsse)" },
     { t: "Tonka-Panna Cotta", d: "mit Kirsch-Kompott", n: "(vegan/glutenfrei/nussfrei)" },
-    { t: "Toblerone-Mousse-Schnitte", d: "mit gerösteten Haselnüssen", n: "(enthält gluten/laktose/nüsse)" }
+    { t: "Toblerone-Mousse-Schnitte", d: "mit gerösteten Haselnüssen", n: "(enthält Gluten/Laktose/Nüsse)" }
   ];
 
   function renderItem(it) {
