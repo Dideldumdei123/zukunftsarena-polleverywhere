@@ -243,6 +243,25 @@
     font-style: italic;
   }
 
+  .meeting-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 7px 9px;
+    background: var(--badge-bg);
+    border: 1px solid var(--badge-text);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--badge-text);
+  }
+
+  .meeting-note .icon {
+    flex: 0 0 auto;
+  }
+
 </style>
 </head>
 <body>
@@ -322,7 +341,8 @@
       tour: true,
       booked: true,
       desc: "Erleben Sie auf dieser spannenden 90-minütigen Führung einen exklusiven Blick hinter die Kulissen des Flughafens Zürich. Verfolgen Sie den Weg eines Koffers von der Gepäckaufgabe bis zum Flugzeug und entdecken Sie die hochmoderne Gepäcksortieranlage mit ihren kilometerlangen Förderbändern, automatischen Scannern und Sortiersystemen. Begleitet von erfahrenen Guides erhalten Sie faszinierende Einblicke in die Prozesse des Gepäcktransports, die Verladung der Container sowie die Arbeit von Lost & Found. Eine einzigartige Tour für alle, die wissen möchten, was hinter den Kulissen eines internationalen Flughafens passiert.",
-      footnote: "Wegen der Länge der Tour entfällt die Kaffeepause. Bitte seien Sie 10 Minuten vor Beginn am Infopoint – dort ist der Treffpunkt."
+      footnote: "Wegen der Länge der Tour entfällt die Kaffeepause.",
+      meetingNote: "Bitte seien Sie 10 Minuten vor Beginn am Infopoint – dort ist der Treffpunkt."
     },
     {
       title: "Von der Datensouveränität zur digitalen Handlungsfähigkeit: Eine Schweizer Geschichte über die Zukunft der Cloud",
@@ -390,7 +410,8 @@
       tour: true,
       booked: true,
       desc: "Erleben Sie auf dieser spannenden 90-minütigen Führung einen exklusiven Blick hinter die Kulissen des Flughafens Zürich. Verfolgen Sie den Weg eines Koffers von der Gepäckaufgabe bis zum Flugzeug und entdecken Sie die hochmoderne Gepäcksortieranlage mit ihren kilometerlangen Förderbändern, automatischen Scannern und Sortiersystemen. Begleitet von erfahrenen Guides erhalten Sie faszinierende Einblicke in die Prozesse des Gepäcktransports, die Verladung der Container sowie die Arbeit von Lost & Found.",
-      footnote: "Startet bereits ab 14:45 Uhr (Fortsetzung der Tour aus Runde 1) – die Kaffeepause entfällt. Bitte seien Sie 10 Minuten vor Beginn am Infopoint – dort ist der Treffpunkt."
+      footnote: "Startet bereits ab 14:45 Uhr – die Kaffeepause entfällt.",
+      meetingNote: "Bitte seien Sie 10 Minuten vor Beginn am Infopoint – dort ist der Treffpunkt."
     },
     {
       title: "Mensch trifft Maschine: AI Session mit humanoidem Roboter",
@@ -418,12 +439,17 @@
 
     const footnote = s.footnote ? '<p class="footnote">' + s.footnote + '</p>' : '';
 
+    const meetingNote = s.meetingNote
+      ? '<div class="meeting-note"><span class="icon">📍</span><span>' + s.meetingNote + '</span></div>'
+      : '';
+
     return (
       '<div class="card' + (s.booked ? ' booked' : '') + '">' +
         '<div class="card-head">' +
           '<div class="badges">' + badges.join('') + '</div>' +
           '<h2 class="title">' + s.title + '</h2>' +
           speakerLine +
+          meetingNote +
         '</div>' +
         '<details class="desc">' +
           '<summary>Beschreibung <span class="chev">▾</span></summary>' +
