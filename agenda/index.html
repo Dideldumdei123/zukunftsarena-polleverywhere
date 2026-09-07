@@ -322,7 +322,7 @@
       tour: true,
       booked: true,
       desc: "Erleben Sie auf dieser spannenden 90-minütigen Führung einen exklusiven Blick hinter die Kulissen des Flughafens Zürich. Verfolgen Sie den Weg eines Koffers von der Gepäckaufgabe bis zum Flugzeug und entdecken Sie die hochmoderne Gepäcksortieranlage mit ihren kilometerlangen Förderbändern, automatischen Scannern und Sortiersystemen. Begleitet von erfahrenen Guides erhalten Sie faszinierende Einblicke in die Prozesse des Gepäcktransports, die Verladung der Container sowie die Arbeit von Lost & Found. Eine einzigartige Tour für alle, die wissen möchten, was hinter den Kulissen eines internationalen Flughafens passiert.",
-      footnote: "Wegen der Länge der Tour entfällt die Kaffeepause."
+      footnote: "Wegen der Länge der Tour entfällt die Kaffeepause. Bitte seien Sie 10 Minuten vor Beginn am Infopoint – dort ist der Treffpunkt."
     },
     {
       title: "Von der Datensouveränität zur digitalen Handlungsfähigkeit: Eine Schweizer Geschichte über die Zukunft der Cloud",
@@ -385,8 +385,17 @@
       desc: "Cyberkriminelle denken wie Angreifer – Ihre Sicherheitsstrategie sollte das auch. Während klassische Schwachstellenscans lediglich potenzielle Risiken aufzeigen und manuelle Penetrationstests nur eine Momentaufnahme liefern, validiert autonomes Pentesting kontinuierlich, welche Angriffswege in Ihrer Umgebung tatsächlich ausnutzbar sind. Basierend auf den Erkenntnissen aus über 265'000 autonom durchgeführten Penetrationstests erfahren Sie, warum Unternehmen ihre Sicherheitsstrategie von einer Checklisten-Mentalität hin zu Continuous Security Validation weiterentwickeln müssen – inklusive Live-Demonstration."
     },
     {
+      title: "Flughafen Tour: Weg des Gepäcks",
+      subtitle: "Hinter den Kulissen (max. 15 Personen)",
+      tour: true,
+      booked: true,
+      desc: "Erleben Sie auf dieser spannenden 90-minütigen Führung einen exklusiven Blick hinter die Kulissen des Flughafens Zürich. Verfolgen Sie den Weg eines Koffers von der Gepäckaufgabe bis zum Flugzeug und entdecken Sie die hochmoderne Gepäcksortieranlage mit ihren kilometerlangen Förderbändern, automatischen Scannern und Sortiersystemen. Begleitet von erfahrenen Guides erhalten Sie faszinierende Einblicke in die Prozesse des Gepäcktransports, die Verladung der Container sowie die Arbeit von Lost & Found.",
+      footnote: "Startet bereits ab 14:45 Uhr (Fortsetzung der Tour aus Runde 1) – die Kaffeepause entfällt. Bitte seien Sie 10 Minuten vor Beginn am Infopoint – dort ist der Treffpunkt."
+    },
+    {
       title: "Mensch trifft Maschine: AI Session mit humanoidem Roboter",
       speakers: ["Ralf Schneider"],
+      room: "Raum 11",
       desc: "Was passiert, wenn künstliche Intelligenz einen Körper bekommt? In dieser interaktiven Breakout-Session erleben die Teilnehmenden gemeinsam mit einem humanoiden Roboter, wie Technologie, KI und menschliche Zusammenarbeit künftig zusammenspielen könnten. Der Roboter wird dabei nicht nur vorgeführt – er wird aktiv in die Session eingebunden. Gemeinsam testen wir, was heute bereits möglich ist, wo die Grenzen liegen und welche Chancen sich daraus für Unternehmen und Mitarbeitende ergeben."
     }
   ];
@@ -400,7 +409,7 @@
       badges.push('<span class="badge booked">Ausgebucht</span>');
     }
     if (!s.tour) {
-      badges.push('<span class="badge room">' + (s.room ? s.room + ' · ' + s.capacity + ' Plätze' : ROOM_TBA) + '</span>');
+      badges.push('<span class="badge room">' + (s.room ? s.room + (s.capacity ? ' · ' + s.capacity + ' Plätze' : '') : ROOM_TBA) + '</span>');
     }
 
     const speakerLine = s.speakers
