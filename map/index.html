@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Event Map – Zukunftsarena 2026</title>
+<meta name="description" content="Interaktiver Lageplan des Convention Centers für die T-Systems Zukunftsarena 2026.">
+<style>
+  :root {
+    --magenta: #E20074;
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --text: #1a1a1e;
+    --text-muted: #5c5c66;
+    --border: #e2e0e6;
+    --shadow: 0 1px 2px rgba(20,20,25,0.08), 0 4px 14px rgba(20,20,25,0.12);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #101014;
+      --surface: #1a1a20;
+      --text: #f2f2f5;
+      --text-muted: #a6a6b0;
+      --border: #2c2c34;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 4px 14px rgba(0,0,0,0.4);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+
+
+
+
+
+  .viewer {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    background: #f4f2f6;
+    touch-action: none;
+    cursor: zoom-in;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .viewer { background: #18181d; }
+  }
+
+  .viewer.zoomed { cursor: grab; }
+  .viewer.dragging { cursor: grabbing; }
+
+  .viewer img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+    max-width: none;
+    pointer-events: none;
+    -webkit-user-drag: none;
+  }
+
+  .viewer img.animate {
+    transition: transform 220ms ease-out;
+  }
+
+  .controls {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 5;
+  }
+
+  .controls button {
+    appearance: none;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .controls button:active {
+    background: var(--magenta);
+    border-color: var(--magenta);
+    color: #fff;
+  }
+
+  .controls button.reset {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .zoom-level {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    z-index: 5;
+    padding: 5px 9px;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+
+<div class="viewer" id="viewer">
+  <img id="map" src="floorplan.jpg" alt="Lageplan des Convention Centers mit Level 1, 2 und 3, Meetingräumen, Bühne, Lounge und Partnerständen" draggable="false">
+  <div class="zoom-level" id="zoomLevel">100 %</div>
+  <div class="controls">
+    <button type="button" id="zoomIn" aria-label="Vergrössern">+</button>
+    <button type="button" id="zoomOut" aria-label="Verkleinern">−</button>
+    <button type="button" id="reset" class="reset" aria-label="Ansicht zurücksetzen">⟲</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var viewer = document.getElementById('viewer');
+  var img = document.getElementById('map');
+  var zoomLabel = document.getElementById('zoomLevel');
+
+  var natW = 0, natH = 0;      // natural image size
+  var fitScale = 1;            // scale at which the whole map fits the viewer
+  var scale = 1, tx = 0, ty = 0; // current transform
+  var MAX_FACTOR = 6;          // max zoom relative to fit
+  var CLICK_STEP = 2;          // zoom factor per tap
+
+  function minScale() { return fitScale; }
+  function maxScale() { return fitScale * MAX_FACTOR; }
+
+  function clampPan() {
+    var vw = viewer.clientWidth, vh = viewer.clientHeight;
+    var w = natW * scale, h = natH * scale;
+    if (w <= vw) tx = (vw - w) / 2;
+    else tx = Math.min(0, Math.max(vw - w, tx));
+    if (h <= vh) ty = (vh - h) / 2;
+    else ty = Math.min(0, Math.max(vh - h, ty));
+  }
+
+  function render(animate) {
+    clampPan();
+    img.classList.toggle('animate', !!animate);
+    img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+    viewer.classList.toggle('zoomed', scale > fitScale * 1.01);
+    zoomLabel.textContent = Math.round(scale / fitScale * 100) + ' %';
+  }
+
+  // Zoom so that the image point under (cx, cy) stays put.
+  function zoomTo(newScale, cx, cy, animate) {
+    newScale = Math.min(maxScale(), Math.max(minScale(), newScale));
+    var ratio = newScale / scale;
+    tx = cx - (cx - tx) * ratio;
+    ty = cy - (cy - ty) * ratio;
+    scale = newScale;
+    render(animate);
+  }
+
+  function fit() {
+    var vw = viewer.clientWidth, vh = viewer.clientHeight;
+    fitScale = Math.min(vw / natW, vh / natH);
+    scale = fitScale;
+    render(false);
+  }
+
+  function viewerPoint(e) {
+    var r = viewer.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+
+  // ---- Pointer handling: tap to zoom, drag to pan, pinch to zoom ----
+  var pointers = new Map();
+  var dragStart = null, moved = false, pinchStart = null;
+  var lastTap = 0;
+
+  viewer.addEventListener('pointerdown', function (e) {
+    if (e.target.closest('button')) return;
+    viewer.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    moved = false;
+    img.classList.remove('animate');
+
+    if (pointers.size === 1) {
+      dragStart = { x: e.clientX, y: e.clientY, tx: tx, ty: ty };
+      viewer.classList.add('dragging');
+    } else if (pointers.size === 2) {
+      var pts = Array.from(pointers.values());
+      pinchStart = {
+        dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y),
+        scale: scale,
+        mid: { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 },
+        tx: tx, ty: ty
+      };
+      dragStart = null;
+    }
+  });
+
+  viewer.addEventListener('pointermove', function (e) {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (pointers.size === 2 && pinchStart) {
+      var pts = Array.from(pointers.values());
+      var dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      var mid = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
+      var r = viewer.getBoundingClientRect();
+      var newScale = Math.min(maxScale(), Math.max(minScale(), pinchStart.scale * dist / pinchStart.dist));
+      var ratio = newScale / pinchStart.scale;
+      var m0 = { x: pinchStart.mid.x - r.left, y: pinchStart.mid.y - r.top };
+      var m1 = { x: mid.x - r.left, y: mid.y - r.top };
+      tx = m1.x - (m0.x - pinchStart.tx) * ratio;
+      ty = m1.y - (m0.y - pinchStart.ty) * ratio;
+      scale = newScale;
+      moved = true;
+      render(false);
+    } else if (pointers.size === 1 && dragStart) {
+      var dx = e.clientX - dragStart.x, dy = e.clientY - dragStart.y;
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
+      if (moved && scale > fitScale * 1.01) {
+        tx = dragStart.tx + dx;
+        ty = dragStart.ty + dy;
+        render(false);
+      }
+    }
+  });
+
+  function endPointer(e) {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.delete(e.pointerId);
+    viewer.classList.remove('dragging');
+
+    if (pointers.size === 0) {
+      var wasPinch = !!pinchStart;
+      pinchStart = null;
+      dragStart = null;
+      if (!moved && !wasPinch && e.type === 'pointerup') {
+        var now = Date.now();
+        var p = viewerPoint(e);
+        if (now - lastTap < 300) {
+          lastTap = 0;
+          fit();
+          img.classList.add('animate');
+          img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+        } else {
+          lastTap = now;
+          if (scale >= maxScale() * 0.99) {
+            fit();
+            img.classList.add('animate');
+            img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+          } else {
+            zoomTo(scale * CLICK_STEP, p.x, p.y, true);
+          }
+        }
+      }
+    } else if (pointers.size === 1) {
+      // Pinch ended with one finger still down: continue as a drag.
+      pinchStart = null;
+      var rem = Array.from(pointers.values())[0];
+      dragStart = { x: rem.x, y: rem.y, tx: tx, ty: ty };
+      moved = true;
+    }
+  }
+  viewer.addEventListener('pointerup', endPointer);
+  viewer.addEventListener('pointercancel', endPointer);
+
+  // Mouse wheel / trackpad zoom
+  viewer.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    var p = viewerPoint(e);
+    var factor = Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002));
+    zoomTo(scale * factor, p.x, p.y, false);
+  }, { passive: false });
+
+  // Buttons
+  document.getElementById('zoomIn').addEventListener('click', function () {
+    zoomTo(scale * 1.5, viewer.clientWidth / 2, viewer.clientHeight / 2, true);
+  });
+  document.getElementById('zoomOut').addEventListener('click', function () {
+    zoomTo(scale / 1.5, viewer.clientWidth / 2, viewer.clientHeight / 2, true);
+  });
+  document.getElementById('reset').addEventListener('click', function () {
+    fit();
+    img.classList.add('animate');
+    img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+  });
+
+  // Keep the current zoom factor when the viewport changes (rotation, resize).
+  window.addEventListener('resize', function () {
+    if (!natW) return;
+    var factor = scale / fitScale;
+    var vw = viewer.clientWidth, vh = viewer.clientHeight;
+    fitScale = Math.min(vw / natW, vh / natH);
+    zoomTo(fitScale * factor, vw / 2, vh / 2, false);
+  });
+
+  function init() {
+    natW = img.naturalWidth;
+    natH = img.naturalHeight;
+    img.style.width = natW + 'px';
+    img.style.height = natH + 'px';
+    fit();
+  }
+  if (img.complete && img.naturalWidth) init();
+  else img.addEventListener('load', init);
+})();
+</script>
+</body>
+</html>
